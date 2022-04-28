@@ -11,3 +11,7 @@ all = [
 
     'get_cifar10_dataset',
 ]
+
+
+
+# TODO: function: choose dataset based on its name
