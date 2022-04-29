@@ -30,7 +30,7 @@ def get_train_valid_dataset(data_dir, valid_ratio,
                             augment, cutout_length):
 
     assert ((valid_ratio >= 0) and (valid_ratio <= 1)), \
-        "[!] valid_size should be in the range [0, 1]."
+        'Assert Error: valid_size should be in the range [0, 1].'
 
     MEAN = [0.4914, 0.4822, 0.4465]
     STD =  [0.2023, 0.1994, 0.2010]

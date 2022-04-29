@@ -1,4 +1,7 @@
 
+
+from .base import BaseTrainer
+
 class BabyStepTrainer:
     def __init__(self):
         return

@@ -1,4 +1,5 @@
 
+from ..solvers import *
 
 
 class BaseTrainer():
@@ -6,13 +7,23 @@ class BaseTrainer():
     def __init__(self, ):
         return
 
-    def fit():
+
+    def fit(self, ):
         return
 
-    def data_schedule():
+
+    def evaluate(self, ):
         return
 
-    def model_schedule():
+
+    def data_schedule(self, ):
         return
+
+
+    def model_schedule(self, ):
+        return
+
+
+    # TODO: function: task_schedule
 
     
