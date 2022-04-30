@@ -13,7 +13,6 @@ all = [
 ]
 
 
-# TODO: function: choose dataset based on its name
 def get_dataset(data_dir, data_name):
 
     data_dict = {
