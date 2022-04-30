@@ -22,9 +22,8 @@ from .dla import *
 
 
 
-def get_model(model_name):
-
-    model_dict = {
+def get_net(net_name):
+    net_dict = {
         'vgg': VGG19,
         'resnet': ResNet18,
         'preactresnet': PreActResNet18,
@@ -40,7 +39,7 @@ def get_model(model_name):
         # TODO: more version of the nets above
     }
 
-    assert model_name in model_dict, \
-        'Assert Error: model_name should be in ' + str(list(model_dict.keys()))
+    assert net_name in net_dict, \
+        'Assert Error: net_name should be in ' + str(list(net_dict.keys()))
     
-    return model_dict[model_name]()
+    return net_dict[net_name]()

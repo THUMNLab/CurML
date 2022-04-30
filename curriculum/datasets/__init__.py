@@ -14,7 +14,6 @@ all = [
 
 
 def get_dataset(data_dir, data_name):
-
     data_dict = {
         'cifar10': get_cifar10_dataset
     }

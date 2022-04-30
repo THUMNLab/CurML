@@ -5,7 +5,6 @@
 
 import numpy as np
 
-import torch
 from torch.utils.data import Subset
 from torchvision import datasets, transforms
 
@@ -16,7 +15,6 @@ from .utils import Cutout
 def get_cifar10_dataset(data_dir, valid_ratio=0.1,
                         shuffle=True, random_seed=43,
                         augment=True, cutout_length=0):
-
     train_dataset, valid_dataset = get_train_valid_dataset(
         data_dir, valid_ratio, shuffle, random_seed, augment, cutout_length
     )
@@ -28,7 +26,6 @@ def get_cifar10_dataset(data_dir, valid_ratio=0.1,
 def get_train_valid_dataset(data_dir, valid_ratio, 
                             shuffle, random_seed, 
                             augment, cutout_length):
-
     assert ((valid_ratio >= 0) and (valid_ratio <= 1)), \
         'Assert Error: valid_size should be in the range [0, 1].'
 
@@ -73,7 +70,6 @@ def get_train_valid_dataset(data_dir, valid_ratio,
 
 
 def get_test_dataset(data_dir):
-
     MEAN = [0.485, 0.456, 0.406]
     STD =  [0.229, 0.224, 0.225]
 
