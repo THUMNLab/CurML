@@ -1,12 +1,6 @@
 import os
 import time
-
-import random
-import numpy as np
-
 import torch
-import torchvision
-
 
 from ..datasets import get_dataset
 from ..backbones import get_net
@@ -55,11 +49,11 @@ class ImageClassifier:
     def _init_model(self, net_name, device_name):
         self.net = get_net(net_name)
         self.device = torch.device(device_name \
-            if torch.cuda.is_available() else "cpu")
+            if torch.cuda.is_available() else 'cpu')
         self.net.to(self.device)
 
         self.epochs = 200
-        self.criterion = torch.nn.CrossEntropyLoss()
+        self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
         self.optimizer = torch.optim.SGD(
             self.net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4
         )
@@ -74,7 +68,7 @@ class ImageClassifier:
 
         log_info = '%s-%s-%s-%d-%s' % (
             algorithm_name, data_name, net_name, random_seed, 
-            time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+            time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
         )
         self.log_dir = os.path.join('./runs', log_info)
         if not os.path.exists('./runs'): os.mkdir('./runs')
@@ -95,8 +89,8 @@ class ImageClassifier:
             correct = 0
             train_loss = 0.0
 
-            loader = self.data_curriculum(self.train_loader) # curriculum part
             net = self.model_curriculum(self.net)            # curriculum part
+            loader = self.data_curriculum(self.train_loader) # curriculum part
 
             net.train()
             for step, data in enumerate(loader):
@@ -119,7 +113,7 @@ class ImageClassifier:
             
             self.lr_scheduler.step()
             self.logger.info(
-                '[%3d] Train data = %d  Loss = %.4f Train Acc = %.4f Time = %.2f'
+                '[%3d] Train data = %5d  Loss = %.4f Train Acc = %.4f Time = %.2f'
                 % (epoch + 1, total, train_loss / (step + 1), correct / total, time.time() - t))
 
             if (epoch + 1) % self.log_interval == 0:
@@ -155,10 +149,18 @@ class ImageClassifier:
 
 
     def evaluate(self):
+        self._load_best()
+        test_acc = self._valid(self.test_loader)
+        self.logger.info('Final Test Acc = %.4f' % (test_acc))
+
+
+    def export(self):
+        self._load_best()
+        return self.net
+
+
+    def _load_best(self):
         net_file = os.path.join(self.log_dir, 'net.pkl')
         assert os.path.exists(net_file), \
             'Assert Error: the net file does not exist'
         self.net.load_state_dict(torch.load(net_file))
-        test_acc = self._valid(self.test_loader)
-        self.logger.info('Final Test Acc = %.4f' % (test_acc))
-

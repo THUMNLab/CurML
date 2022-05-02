@@ -21,10 +21,18 @@ class BaseCL():
         def __len__(self):
             return len(self.dataset)
 
+        def set_weights(self, weights):
+            self.weights = weights
+            return self
+
 
     def __init__(self):
         self.name = 'base'
         self.epoch = 0
+
+
+    def model_curriculum(self, net):
+        return net
 
 
     def data_curriculum(self, loader):
@@ -36,10 +44,6 @@ class BaseCL():
         self.n_batches = (self.data_size - 1) // self.batch_size + 1
 
         return DataLoader(self.dataset, self.batch_size, shuffle=True)
-
-
-    def model_curriculum(self, net):
-        return net
 
 
     def loss_curriculum(self, outputs, labels, criterion, weights):
@@ -60,6 +64,8 @@ class BaseTrainer():
                 cl.name, cl.data_curriculum, 
                 cl.model_curriculum, cl.loss_curriculum,
             )
+        else:
+            raise NotImplementedError()
         
 
     def fit(self):
@@ -68,3 +74,7 @@ class BaseTrainer():
 
     def evaluate(self):
         self.trainer.evaluate()
+
+    
+    def export(self):
+        self.trainer.export()
