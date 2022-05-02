@@ -10,13 +10,21 @@ import torchvision
 
 from ..datasets import get_dataset
 from ..backbones import get_net
-from ..utils import get_logger
+from ..utils import get_logger, fix_random
 
 
 
 class ImageClassifier:
-    def __init__(self, algorithm_name, data_name, 
-                 net_name, device_name, random_seed):
+    def __init__(self, data_name, net_name, 
+                 device_name, random_seed,
+                 algorithm_name, data_curriculum, 
+                 model_curriculum, loss_curriculum):
+
+        self.random_seed = random_seed
+
+        self.data_curriculum = data_curriculum
+        self.model_curriculum = model_curriculum
+        self.loss_curriculum = loss_curriculum
 
         self._init_dataloader(data_name)
         self._init_model(net_name, device_name)
@@ -54,7 +62,7 @@ class ImageClassifier:
             self.net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4
         )
         self.lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            self.optimizer, Tmax=self.epochs, eta_min=1e-6
+            self.optimizer, T_max=self.epochs, eta_min=1e-6
         )
 
     
@@ -75,38 +83,50 @@ class ImageClassifier:
         self.logger = get_logger(log_file)
 
 
-    def _train_one_epoch(self, epoch):
-        t = time.time()
-        total = 0
-        running_loss = 0.0
+    def _train(self):
+        best_acc = 0.0
 
-        self.net.train()
-        # for step, data in enumerate(curriculum.data_scheduler()): # curriculum part
-        #     inputs = data[0].to(device)
-        #     labels = data[1].to(device)
+        for epoch in range(self.epochs):
+            t = time.time()
+            total = 0
+            correct = 0
+            train_loss = 0.0
 
-        #     optimizer.zero_grad()
-        #     outputs = net(inputs)
-        #     loss = criterion(outputs, labels)
-        #     loss.backward()
-        #     optimizer.step()
+            loader = self.data_curriculum(self.train_loader) # curriculum part
+            net = self.model_curriculum(self.net)            # curriculum part
 
-        #     running_loss += loss.item()
-        #     total += labels.shape[0]
-        # scheduler.step()
+            net.train()
+            for step, data in enumerate(loader):
+                inputs = data[0].to(self.device)
+                labels = data[1].to(self.device)
+                weights = data[2].to(self.device)
 
-        # test_acc = test(testloader)
-        # if test_acc > best_acc:
-        #     best_acc = test_acc
-        #     torch.save(net.state_dict(), 'model/cifar10-resnet-%s-hard.pkl' % (args.algo))
-        # print('[%3d] Train data = %d  Loss = %.4f  Test acc = %.4f  Time = %.2fs' % \
-        #     (epoch + 1, total, running_loss / step, test_acc, time.time() - t))
+                self.optimizer.zero_grad()
+                outputs = net(inputs)
+                loss = self.loss_curriculum(                 # curriculum part
+                    outputs, labels, self.criterion, weights
+                )
+                loss.backward()
+                self.optimizer.step()
 
-        
+                train_loss += loss.item()
+                _, predicted = outputs.max(dim=1)
+                correct += predicted.eq(labels).sum().item()
+                total += labels.shape[0]
+            
+            self.lr_scheduler.step()
+            self.logger.info(
+                '[%3d] Train data = %d  Loss = %.4f Train Acc = %.4f Time = %.2fs'
+                % (epoch + 1, total, train_loss / (step + 1), correct / total, time.time() - t))
 
-        self.lr_scheduler.step()
-        if (epoch + 1) % self.log_interval == 0:
-            self._valid(self.valid_loader)
+            if (epoch + 1) % self.log_interval == 0:
+                valid_acc = self._valid(self.valid_loader)
+                if valid_acc > best_acc:
+                    best_acc = valid_acc
+                    torch.save(net.state_dict(), os.path.join(self.log_dir, 'net.pkl'))
+                self.logger.info('[%3d] Valid data = %d Valid Acc = %.4f' 
+                % (epoch + 1, len(self.valid_loader.dataset), valid_acc))
+            
 
 
     def _valid(self, loader):
@@ -127,15 +147,15 @@ class ImageClassifier:
 
 
     def fit(self):
-        for epoch in range(self.epochs):
-            self._train_one_epoch(epoch)
+        fix_random(self.random_seed)
+        self._train()
 
 
     def evaluate(self):
         net_file = os.path.join(self.log_dir, 'net.pkl')
         assert os.path.exists(net_file), \
-            'Assert Error: the best net does not exist'
+            'Assert Error: the net file does not exist'
         self.net.load_state_dict(torch.load(net_file))
-        accuracy = self._valid(self.test_loader)
-        # TODO: log
+        test_acc = self._valid(self.test_loader)
+        self.logger.info('Final Test Acc = %.4f' % (test_acc))
 
