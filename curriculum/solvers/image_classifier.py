@@ -10,7 +10,7 @@ import torchvision
 
 from ..datasets import get_dataset
 from ..backbones import get_net
-from ..utils import get_logger, fix_random
+from ..utils import get_logger, set_random
 
 
 
@@ -33,6 +33,8 @@ class ImageClassifier:
 
 
     def _init_dataloader(self, data_name):
+        set_random(self.random_seed)
+
         train_dataset, valid_dataset, test_dataset = \
             get_dataset('./data', data_name)
 
@@ -70,8 +72,9 @@ class ImageClassifier:
                      net_name, random_seed):
         self.log_interval = 10
 
-        log_info = '%s-%s-%s-%d' % (
-            algorithm_name, data_name, net_name, random_seed
+        log_info = '%s-%s-%s-%d-%s' % (
+            algorithm_name, data_name, net_name, random_seed, 
+            time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         )
         self.log_dir = os.path.join('./runs', log_info)
         if not os.path.exists('./runs'): os.mkdir('./runs')
@@ -116,7 +119,7 @@ class ImageClassifier:
             
             self.lr_scheduler.step()
             self.logger.info(
-                '[%3d] Train data = %d  Loss = %.4f Train Acc = %.4f Time = %.2fs'
+                '[%3d] Train data = %d  Loss = %.4f Train Acc = %.4f Time = %.2f'
                 % (epoch + 1, total, train_loss / (step + 1), correct / total, time.time() - t))
 
             if (epoch + 1) % self.log_interval == 0:
@@ -147,7 +150,7 @@ class ImageClassifier:
 
 
     def fit(self):
-        fix_random(self.random_seed)
+        set_random(self.random_seed)
         self._train()
 
 

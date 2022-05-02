@@ -1,9 +1,9 @@
 from .log import get_logger
-from .rand import fix_random
+from .rand import set_random
 
 
 
 __all__ = [
     'get_logger',
-    'fix_random',
+    'set_random',
 ]

@@ -59,7 +59,6 @@ def get_train_valid_dataset(data_dir, valid_ratio,
     indices = list(range(num_train))
     split = int(np.floor(valid_ratio * num_train))
     if shuffle:
-        np.random.seed(random_seed)
         np.random.shuffle(indices)
 
     train_idx, valid_idx = indices[split:], indices[:split]

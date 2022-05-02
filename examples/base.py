@@ -3,7 +3,6 @@ import argparse
 from curriculum.algorithms import BaseTrainer
 
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--data', type=str, default='cifar10')
 parser.add_argument('--net', type=str, default='resnet')

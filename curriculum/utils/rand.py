@@ -4,7 +4,7 @@ import torch
 
 
 
-def fix_random(seed):
+def set_random(seed):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
