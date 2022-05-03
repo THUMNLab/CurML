@@ -66,10 +66,13 @@ class ImageClassifier():
                      net_name, random_seed):
         self.log_interval = 10
 
-        log_info = '%s-%s-%s-%d' % (
+        # log_info = '%s-%s-%s-%d' % (
+        #     algorithm_name, data_name, net_name, random_seed,
+        # )
+        log_info = '%s-%s-%s-%d-%s' % (
             algorithm_name, data_name, net_name, random_seed,
+            time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
         )
-        log_info += '-%s' % time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
         self.log_dir = os.path.join('./runs', log_info)
         if not os.path.exists('./runs'): os.mkdir('./runs')
         if not os.path.exists(self.log_dir): os.mkdir(self.log_dir)

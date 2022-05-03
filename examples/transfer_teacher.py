@@ -24,7 +24,7 @@ pretrainer = BaseTrainer(
     device_name=args.device,
     random_seed=2,
 )
-# pretrainer.fit()
+pretrainer.fit()
 pretrainer.evaluate()
 teacher_net = pretrainer.export()
 

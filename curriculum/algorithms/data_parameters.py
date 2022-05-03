@@ -14,35 +14,41 @@ class DataParameters(BaseCL):
         self.class_weights = None
         self.class_optimizer = None
 
+        self.class_size = class_size
+        self.device = device
+
 
     def data_curriculum(self, loader):
         super().data_curriculum(loader)
 
         if self.data_optimizer is None:
-            self.data_weights = torch.ones(self.data_size, requires_grad=True
+            self.data_weights = torch.log(1.0) * torch.ones(
+                self.data_size, requires_grad=True, device=self.device
+            )
+            self.data_optimizer
             
             
-    class_parameters = torch.tensor(np.ones(num_class) * np.log(1.0),
-                                    dtype=torch.float32,
-                                    requires_grad=True,
-                                    device=device)
-    optimizer_class_param = SparseSGD([class_parameters],
-                                      lr=0.1,
-                                      momentum=0.9,
-                                      skip_update_zero_grad=True)
+    # class_parameters = torch.tensor(np.ones(num_class) * np.log(1.0),
+    #                                 dtype=torch.float32,
+    #                                 requires_grad=True,
+    #                                 device=device)
+    # optimizer_class_param = SparseSGD([class_parameters],
+    #                                   lr=0.1,
+    #                                   momentum=0.9,
+    #                                   skip_update_zero_grad=True)
 
-    # instance-parameter
-    inst_parameters = torch.tensor(np.ones(num_instance) * np.log(1.0),
-                                   dtype=torch.float32,
-                                   requires_grad=True,
-                                   device=device)
-    optimizer_inst_param = SparseSGD([inst_parameters],
-                                     lr=0.2,
-                                     momentum=0.9,
-                                     skip_update_zero_grad=True)
+    # # instance-parameter
+    # inst_parameters = torch.tensor(np.ones(num_instance) * np.log(1.0),
+    #                                dtype=torch.float32,
+    #                                requires_grad=True,
+    #                                device=device)
+    # optimizer_inst_param = SparseSGD([inst_parameters],
+    #                                  lr=0.2,
+    #                                  momentum=0.9,
+    #                                  skip_update_zero_grad=True)
 
 
-    def loss_curriculum(self, outputs, labels, criterion, indices):
+    def loss_curriculum(self, criterion, outputs, labels, indices):
         return
         
 
