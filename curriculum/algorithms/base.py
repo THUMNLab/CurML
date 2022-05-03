@@ -8,27 +8,20 @@ from ..solvers import *
 class BaseCL():
 
     class CLDataset(Dataset):
-        def __init__(self, dataset, weights=None):
+        def __init__(self, dataset):
             self.dataset = dataset
-            self.weights = torch.ones(len(dataset)) \
-                if weights is None else weights
 
         def __getitem__(self, index):
             data = self.dataset[index]
-            weights = self.weights[index]
-            return [part for part in data] + [weights]
+            return [part for part in data] + [index]
 
         def __len__(self):
             return len(self.dataset)
 
-        def set_weights(self, weights):
-            self.weights = weights
-            return self
-
 
     def __init__(self):
         self.name = 'base'
-        self.epoch = 0
+        self.dataset = None
 
 
     def model_curriculum(self, net):
@@ -36,18 +29,17 @@ class BaseCL():
 
 
     def data_curriculum(self, loader):
-        self.epoch += 1
-
-        self.dataset = self.CLDataset(loader.dataset)
-        self.data_size = len(self.dataset)
-        self.batch_size = loader.batch_size
-        self.n_batches = (self.data_size - 1) // self.batch_size + 1
+        if self.dataset is None:
+            self.dataset = self.CLDataset(loader.dataset)
+            self.data_size = len(self.dataset)
+            self.batch_size = loader.batch_size
+            self.n_batches = (self.data_size - 1) // self.batch_size + 1
 
         return DataLoader(self.dataset, self.batch_size, shuffle=True)
 
 
-    def loss_curriculum(self, outputs, labels, criterion, weights):
-        return torch.mean(criterion(outputs, labels) * weights)
+    def loss_curriculum(self, criterion, outputs, labels, indices):
+        return torch.mean(criterion(outputs, labels))
 
 
 

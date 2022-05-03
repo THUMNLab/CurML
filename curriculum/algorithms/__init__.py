@@ -5,6 +5,7 @@ from .lambda_step import LambdaStep, LambdaStepTrainer
 from .self_paced import SelfPaced, SelfPacedTrainer
 from .transfer_teacher import TransferTeacher, TransferTeacherTrainer
 from .superloss import Superloss, SuperlossTrainer
+from .data_parameters import DataParameters, DataParametersTrainer
 
 
 
@@ -26,4 +27,7 @@ all = [
 
     'Superloss',
     'SuperlossTrainer',
+
+    'DataParameters',
+    'DataParametersTrainer'
 ]

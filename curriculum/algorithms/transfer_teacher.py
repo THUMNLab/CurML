@@ -18,10 +18,6 @@ class TransferTeacher(SelfPaced):
         self.net.to(device)
 
 
-    def model_curriculum(self, net):
-        return net
-
-
     def _loss_measure(self):
         if self.data_loss is None:
             self.data_loss = super()._loss_measure()

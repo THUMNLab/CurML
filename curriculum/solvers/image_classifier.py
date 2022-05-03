@@ -95,12 +95,12 @@ class ImageClassifier():
             for step, data in enumerate(loader):
                 inputs = data[0].to(self.device)
                 labels = data[1].to(self.device)
-                weights = data[2].to(self.device)
+                indices = data[2].to(self.device)
 
                 self.optimizer.zero_grad()
                 outputs = net(inputs)
                 loss = self.loss_curriculum(                 # curriculum part
-                    outputs, labels, self.criterion, weights
+                    self.criterion, outputs, labels, indices
                 )
                 loss.backward()
                 self.optimizer.step()

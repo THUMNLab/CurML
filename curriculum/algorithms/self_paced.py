@@ -12,6 +12,10 @@ class SelfPaced(BaseCL):
         super(SelfPaced, self).__init__()
 
         self.name = 'selfpaced'
+        self.epoch = 0
+        self.net = None
+        self.weights = None
+
         self.start_rate = start_rate
         self.grow_epochs = grow_epochs
         self.grow_fn = grow_fn
@@ -21,13 +25,15 @@ class SelfPaced(BaseCL):
 
 
     def model_curriculum(self, net):
-        self.net = net
+        if self.net is None:
+            self.net = net
         return net
 
 
     def data_curriculum(self, loader):
         super().data_curriculum(loader)
 
+        self.epoch += 1
         data_rate = min(1.0, self._subset_grow())
         data_size = int(self.data_size * data_rate)
 
@@ -38,9 +44,16 @@ class SelfPaced(BaseCL):
         if self.weight_fn == 'hard':
             dataset = Subset(self.dataset, tuple(range(data_size)))
         else:
-            weights = self._loss_reweight(data_loss, data_threshold)
-            dataset = self.dataset.set_weights(weights)
+            self.weights = self._data_weight(data_loss, data_threshold)
+            dataset = self.dataset
         return DataLoader(dataset, self.batch_size, shuffle=True)
+
+
+    def loss_curriculum(self, criterion, outputs, labels, indices):
+        if self.weight_fn == 'hard':
+            return torch.mean(criterion(outputs, labels))
+        else:
+            return torch.mean(criterion(outputs, labels) * self.weights[indices])
 
 
     def _subset_grow(self):
@@ -61,7 +74,7 @@ class SelfPaced(BaseCL):
             for data in DataLoader(self.dataset, self.batch_size)])
 
 
-    def _loss_reweight(self, loss, threshold):
+    def _data_weight(self, loss, threshold):
         mask = loss < threshold
         if self.weight_fn == 'linear':
             return mask * (1.0 - loss / threshold)
