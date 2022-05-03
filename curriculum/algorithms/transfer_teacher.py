@@ -1,3 +1,4 @@
+from curriculum.algorithms.base import BaseTrainer
 import torch
 
 from .self_paced import SelfPacedTrainer, SelfPaced
@@ -28,9 +29,9 @@ class TransferTeacher(SelfPaced):
 
 
 
-class TransferTeacherTrainer(SelfPacedTrainer):
+class TransferTeacherTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, random_seed, 
-                 start_rate, grow_epochs, weight_fn, grow_fn, teacher_net):
+                 start_rate, grow_epochs, grow_fn, weight_fn, teacher_net):
         
         if data_name in ['cifar10']:
             cl = TransferTeacher(

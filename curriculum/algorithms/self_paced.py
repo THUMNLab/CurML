@@ -78,7 +78,7 @@ class SelfPaced(BaseCL):
 
 class SelfPacedTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, random_seed, 
-                 start_rate, grow_epochs, weight_fn, grow_fn):
+                 start_rate, grow_epochs, grow_fn, weight_fn):
         
         if data_name in ['cifar10']:
             cl = SelfPaced(

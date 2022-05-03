@@ -69,12 +69,12 @@ class BaseTrainer():
         
 
     def fit(self):
-        self.trainer.fit()
+        return self.trainer.fit()
 
 
     def evaluate(self):
-        self.trainer.evaluate()
+        return self.trainer.evaluate()
 
     
     def export(self):
-        self.trainer.export()
+        return self.trainer.export()

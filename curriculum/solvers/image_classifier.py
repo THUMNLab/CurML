@@ -8,7 +8,7 @@ from ..utils import get_logger, set_random
 
 
 
-class ImageClassifier:
+class ImageClassifier():
     def __init__(self, data_name, net_name, 
                  device_name, random_seed,
                  algorithm_name, data_curriculum, 
@@ -66,17 +66,16 @@ class ImageClassifier:
                      net_name, random_seed):
         self.log_interval = 10
 
-        log_info = '%s-%s-%s-%d-%s' % (
-            algorithm_name, data_name, net_name, random_seed, 
-            time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+        log_info = '%s-%s-%s-%d' % (
+            algorithm_name, data_name, net_name, random_seed,
         )
+        log_info += '-%s' % time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
         self.log_dir = os.path.join('./runs', log_info)
         if not os.path.exists('./runs'): os.mkdir('./runs')
-        assert not os.path.exists(self.log_dir), \
-            'Assert Error: the directory %s has already existed' % (self.log_dir)
-        os.mkdir(self.log_dir)
+        if not os.path.exists(self.log_dir): os.mkdir(self.log_dir)
+        else: print('The directory %s has already existed.' % (self.log_dir))
+        
         log_file = os.path.join(self.log_dir, 'train.log')
-
         self.logger = get_logger(log_file)
 
 
@@ -149,17 +148,18 @@ class ImageClassifier:
 
 
     def evaluate(self):
-        self._load_best()
+        self._load_best_net()
         test_acc = self._valid(self.test_loader)
         self.logger.info('Final Test Acc = %.4f' % (test_acc))
+        return test_acc
 
 
     def export(self):
-        self._load_best()
+        self._load_best_net()
         return self.net
 
 
-    def _load_best(self):
+    def _load_best_net(self):
         net_file = os.path.join(self.log_dir, 'net.pkl')
         assert os.path.exists(net_file), \
             'Assert Error: the net file does not exist'
