@@ -7,15 +7,13 @@ from .self_paced import SelfPaced
 
 class TransferTeacher(SelfPaced):
     def __init__(self, start_rate, grow_epochs, grow_fn,  
-                 weight_fn, teacher_net, criterion, device):
+                 weight_fn, teacher_net, criterion):
         super(TransferTeacher, self).__init__(
-            start_rate, grow_epochs, grow_fn, 
-            weight_fn, criterion, device)
+            start_rate, grow_epochs, grow_fn, weight_fn, criterion)
 
         self.name = 'transferteacher'
         self.data_loss = None
         self.net = teacher_net
-        self.net.to(device)
 
 
     def _loss_measure(self):
@@ -33,7 +31,6 @@ class TransferTeacherTrainer(BaseTrainer):
             cl = TransferTeacher(
                 start_rate, grow_epochs, grow_fn, weight_fn, teacher_net,
                 torch.nn.CrossEntropyLoss(reduction='none'),
-                torch.device(device_name),
             )
         else:
             raise NotImplementedError()

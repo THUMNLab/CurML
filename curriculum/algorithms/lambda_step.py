@@ -11,7 +11,7 @@ class LambdaStep(BaseCL):
 
         self.name = 'lambdastep'
         self.epoch = 0
-
+        
         self.start_rate = start_rate
         self.grow_epochs = grow_epochs
         self.grow_fn = grow_fn

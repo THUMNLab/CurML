@@ -24,8 +24,8 @@ class BaseCL():
         self.dataset = None
 
 
-    def model_curriculum(self, net):
-        return net
+    def model_curriculum(self, net, device):
+        return net.to(device)
 
 
     def data_curriculum(self, loader):

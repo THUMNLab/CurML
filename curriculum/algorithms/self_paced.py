@@ -7,13 +7,14 @@ from .base import BaseTrainer, BaseCL
 
 
 class SelfPaced(BaseCL):
-    def __init__(self, start_rate, grow_epochs, grow_fn, 
-                 weight_fn, criterion, device):
+    def __init__(self, start_rate, grow_epochs, 
+                 grow_fn, weight_fn, criterion):
         super(SelfPaced, self).__init__()
 
         self.name = 'selfpaced'
         self.epoch = 0
         self.net = None
+        self.device = None
         self.weights = None
 
         self.start_rate = start_rate
@@ -21,13 +22,12 @@ class SelfPaced(BaseCL):
         self.grow_fn = grow_fn
         self.weight_fn = weight_fn
         self.criterion = criterion
-        self.device = device
 
 
-    def model_curriculum(self, net):
-        if self.net is None:
-            self.net = net
-        return net
+    def model_curriculum(self, net, device):
+        if self.net is None: self.net = net
+        if self.device is None: self.device = device
+        return net.to(device)
 
 
     def data_curriculum(self, loader):
@@ -97,7 +97,6 @@ class SelfPacedTrainer(BaseTrainer):
             cl = SelfPaced(
                 start_rate, grow_epochs, grow_fn, weight_fn,
                 torch.nn.CrossEntropyLoss(reduction='none'),
-                torch.device(device_name),
             )
         else:
             raise NotImplementedError()

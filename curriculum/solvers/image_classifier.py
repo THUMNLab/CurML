@@ -91,8 +91,8 @@ class ImageClassifier():
             correct = 0
             train_loss = 0.0
 
-            net = self.model_curriculum(self.net)            # curriculum part
-            loader = self.data_curriculum(self.train_loader) # curriculum part
+            net = self.model_curriculum(self.net, self.device)  # curriculum part
+            loader = self.data_curriculum(self.train_loader)    # curriculum part
 
             net.train()
             for step, data in enumerate(loader):
@@ -102,7 +102,7 @@ class ImageClassifier():
 
                 self.optimizer.zero_grad()
                 outputs = net(inputs)
-                loss = self.loss_curriculum(                 # curriculum part
+                loss = self.loss_curriculum(                    # curriculum part
                     self.criterion, outputs, labels, indices
                 )
                 loss.backward()

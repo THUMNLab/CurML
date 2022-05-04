@@ -6,17 +6,23 @@ from .utils import SparseSGD
 
 
 class DataParameters(BaseCL):
-    def __init__(self, class_size, device):
+    def __init__(self, class_size):
         super(DataParameters, self).__init__()
 
         self.name = 'dataparameters'
+        self.class_size = class_size
+
+        self.device = None
         self.data_weights = None
         self.data_optimizer = None
         self.class_weights = None
         self.class_optimizer = None
 
-        self.class_size = class_size
-        self.device = device
+
+    def model_curriculum(self, net, device):
+        if self.device is None:
+            self.device = device
+        return net.to(device)
 
 
     def data_curriculum(self, loader):
