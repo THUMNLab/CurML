@@ -1,7 +1,7 @@
-from curriculum.algorithms.base import BaseTrainer
 import torch
 
-from .self_paced import SelfPacedTrainer, SelfPaced
+from .base import BaseTrainer
+from .self_paced import SelfPaced
 
 
 
