@@ -31,7 +31,7 @@ class SelfPaced(BaseCL):
 
 
     def data_curriculum(self, loader):
-        super().data_curriculum(loader)
+        loader = super().data_curriculum(loader)
 
         self.epoch += 1
         data_rate = min(1.0, self._subset_grow())
@@ -43,10 +43,10 @@ class SelfPaced(BaseCL):
 
         if self.weight_fn == 'hard':
             dataset = Subset(self.dataset, tuple(range(data_size)))
+            return DataLoader(dataset, self.batch_size, shuffle=True)
         else:
             self.weights = self._data_weight(data_loss, data_threshold)
-            dataset = self.dataset
-        return DataLoader(dataset, self.batch_size, shuffle=True)
+            return loader
 
 
     def loss_curriculum(self, criterion, outputs, labels, indices):
