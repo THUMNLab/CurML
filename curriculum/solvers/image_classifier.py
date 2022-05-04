@@ -9,13 +9,14 @@ from ..utils import get_logger, set_random
 
 
 class ImageClassifier():
-    def __init__(self, data_name, net_name, 
-                 device_name, random_seed,
-                 algorithm_name, data_curriculum, 
-                 model_curriculum, loss_curriculum):
+    def __init__(self, data_name, net_name, device_name, random_seed,
+                 algorithm_name, data_prepare, model_prepare,
+                 data_curriculum, model_curriculum, loss_curriculum):
 
         self.random_seed = random_seed
 
+        self.data_prepare = data_prepare
+        self.model_prepare = model_prepare
         self.data_curriculum = data_curriculum
         self.model_curriculum = model_curriculum
         self.loss_curriculum = loss_curriculum
@@ -45,6 +46,8 @@ class ImageClassifier():
             num_workers=2, pin_memory=True,
         )
 
+        self.data_prepare(self.train_loader)
+
 
     def _init_model(self, net_name, device_name):
         self.net = get_net(net_name)
@@ -59,6 +62,11 @@ class ImageClassifier():
         )
         self.lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             self.optimizer, T_max=self.epochs, eta_min=1e-6
+        )
+
+        self.model_prepare(
+            self.net, self.device, self.epochs, 
+            self.criterion, self.optimizer, self.lr_scheduler
         )
 
     
@@ -91,8 +99,8 @@ class ImageClassifier():
             correct = 0
             train_loss = 0.0
 
-            net = self.model_curriculum(self.net, self.device)  # curriculum part
             loader = self.data_curriculum(self.train_loader)    # curriculum part
+            net = self.model_curriculum(self.net)               # curriculum part
 
             net.train()
             for step, data in enumerate(loader):
@@ -116,15 +124,18 @@ class ImageClassifier():
             self.lr_scheduler.step()
             self.logger.info(
                 '[%3d] Train data = %5d  Loss = %.4f Train Acc = %.4f Time = %.2f'
-                % (epoch + 1, total, train_loss / (step + 1), correct / total, time.time() - t))
+                % (epoch + 1, total, train_loss / (step + 1), correct / total, time.time() - t)
+            )
 
             if (epoch + 1) % self.log_interval == 0:
                 valid_acc = self._valid(self.valid_loader)
                 if valid_acc > best_acc:
                     best_acc = valid_acc
                     torch.save(net.state_dict(), os.path.join(self.log_dir, 'net.pkl'))
-                self.logger.info('[%3d] Valid data = %d Valid Acc = %.4f' 
-                % (epoch + 1, len(self.valid_loader.dataset), valid_acc))
+                self.logger.info(
+                    '[%3d] Valid data = %d Valid Acc = %.4f' 
+                    % (epoch + 1, len(self.valid_loader.dataset), valid_acc)
+                )
             
 
 

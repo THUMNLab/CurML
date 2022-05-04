@@ -17,9 +17,8 @@ class BabyStep(BaseCL):
 
 
     def data_curriculum(self, loader):
-        loader = super().data_curriculum(loader)
-        
         self.epoch += 1
+
         data_rate = min(1.0, self._subset_grow())
         data_size = int(self.data_size * data_rate)
 
@@ -32,8 +31,7 @@ class BabyStep(BaseCL):
 
 
 class BabyStepTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, 
-                 device_name, random_seed, 
+    def __init__(self, data_name, net_name, device_name, random_seed, 
                  start_rate, grow_rate, grow_interval):
         
         cl = BabyStep(start_rate, grow_rate, grow_interval)

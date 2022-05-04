@@ -21,21 +21,26 @@ class BaseCL():
 
     def __init__(self):
         self.name = 'base'
-        self.dataset = None
 
 
-    def model_curriculum(self, net, device):
-        return net.to(device)
+    def data_prepare(self, loader):
+        self.dataset = self.CLDataset(loader.dataset)
+        self.data_size = len(self.dataset)
+        self.batch_size = loader.batch_size
+        self.n_batches = (self.data_size - 1) // self.batch_size + 1
+
+
+    def model_prepare(self, net, device, epochs, 
+                      criterion, optimizer, lr_scheduler):
+        pass
 
 
     def data_curriculum(self, loader):
-        if self.dataset is None:
-            self.dataset = self.CLDataset(loader.dataset)
-            self.data_size = len(self.dataset)
-            self.batch_size = loader.batch_size
-            self.n_batches = (self.data_size - 1) // self.batch_size + 1
-
         return DataLoader(self.dataset, self.batch_size, shuffle=True)
+
+
+    def model_curriculum(self, net):
+        return net
 
 
     def loss_curriculum(self, criterion, outputs, labels, indices):
@@ -45,16 +50,14 @@ class BaseCL():
 
 class BaseTrainer():
 
-    def __init__(self, data_name, net_name, 
-                 device_name, random_seed, 
-                 cl=BaseCL()):
+    def __init__(self, data_name, net_name, device_name, 
+                 random_seed, cl=BaseCL()):
         
         if data_name in ['cifar10']:
             self.trainer = ImageClassifier(
-                data_name, net_name, 
-                device_name, random_seed,
-                cl.name, cl.data_curriculum, 
-                cl.model_curriculum, cl.loss_curriculum,
+                data_name, net_name, device_name, random_seed,
+                cl.name, cl.data_prepare, cl.model_prepare,
+                cl.data_curriculum, cl.model_curriculum, cl.loss_curriculum,
             )
         else:
             raise NotImplementedError()

@@ -1,19 +1,17 @@
-import torch
-
 from .base import BaseTrainer
 from .self_paced import SelfPaced
 
 
 
 class TransferTeacher(SelfPaced):
-    def __init__(self, start_rate, grow_epochs, grow_fn,  
-                 weight_fn, teacher_net, criterion):
+    def __init__(self, start_rate, grow_epochs, 
+                 grow_fn, weight_fn, teacher_net):
         super(TransferTeacher, self).__init__(
-            start_rate, grow_epochs, grow_fn, weight_fn, criterion)
+            start_rate, grow_epochs, grow_fn, weight_fn)
 
         self.name = 'transferteacher'
-        self.data_loss = None
         self.net = teacher_net
+        self.data_loss = None
 
 
     def _loss_measure(self):
@@ -26,14 +24,10 @@ class TransferTeacher(SelfPaced):
 class TransferTeacherTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, random_seed, 
                  start_rate, grow_epochs, grow_fn, weight_fn, teacher_net):
-        
-        if data_name in ['cifar10']:
-            cl = TransferTeacher(
-                start_rate, grow_epochs, grow_fn, weight_fn, teacher_net,
-                torch.nn.CrossEntropyLoss(reduction='none'),
-            )
-        else:
-            raise NotImplementedError()
+
+        cl = TransferTeacher(
+            start_rate, grow_epochs, grow_fn, weight_fn, teacher_net
+        )
 
         super(TransferTeacherTrainer, self).__init__(
             data_name, net_name, device_name, random_seed, cl

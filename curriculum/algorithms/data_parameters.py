@@ -5,49 +5,42 @@ from .base import BaseTrainer, BaseCL
 from .utils import SparseSGD
 
 
+
 class DataParameters(BaseCL):
     def __init__(self, class_size):
         super(DataParameters, self).__init__()
 
         self.name = 'dataparameters'
-        self.class_size = class_size
-
         self.device = None
         self.data_weights = None
         self.data_optimizer = None
         self.class_weights = None
         self.class_optimizer = None
 
-
-    def model_curriculum(self, net, device):
-        if self.device is None:
-            self.device = device
-        return net.to(device)
+        self.class_size = class_size
 
 
-    def data_curriculum(self, loader):
-        loader = super().data_curriculum(loader)
+    def model_prepare(self, net, device, epochs, 
+                      criterion, optimizer, lr_scheduler):
+        self.device = device
 
-        if self.data_optimizer is None:
-            self.data_weights = torch.tensor(
-                np.ones(self.data_size) * np.log(1.0),
-                dtype=torch.float32, requires_grad=True, device=self.device
-            )
-            self.data_optimizer = SparseSGD([self.data_weights], 
-                lr=0.1, momentum=0.9, skip_update_zero_grad=True
-            )
-            self.data_optimizer.zero_grad()
-        if self.class_optimizer is None:
-            self.class_weights = torch.tensor(
-                np.ones(self.class_size) * np.log(1.0),
-                dtype=torch.float32, requires_grad=True, device=self.device
-            )
-            self.class_optimizer = SparseSGD([self.class_weights], 
-                lr=0.1, momentum=0.9, skip_update_zero_grad=True
-            )
-            self.class_optimizer.zero_grad()
+        self.data_weights = torch.tensor(
+            np.ones(self.data_size) * np.log(1.0),
+            dtype=torch.float32, requires_grad=True, device=self.device
+        )
+        self.data_optimizer = SparseSGD([self.data_weights], 
+            lr=0.1, momentum=0.9, skip_update_zero_grad=True
+        )
+        self.data_optimizer.zero_grad()
 
-        return loader
+        self.class_weights = torch.tensor(
+            np.ones(self.class_size) * np.log(1.0),
+            dtype=torch.float32, requires_grad=True, device=self.device
+        )
+        self.class_optimizer = SparseSGD([self.class_weights], 
+            lr=0.1, momentum=0.9, skip_update_zero_grad=True
+        )
+        self.class_optimizer.zero_grad()
 
 
     def loss_curriculum(self, criterion, outputs, labels, indices):
@@ -71,15 +64,10 @@ class DataParameters(BaseCL):
 
 
 class DataParametersTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, 
-                 device_name, random_seed):
+    def __init__(self, data_name, net_name, device_name, random_seed):
         
-        if data_name in ['cifar10']:
-            cl = DataParameters(
-                class_size=10, device=torch.device(device_name),
-            )
-        else:
-            raise NotImplementedError()
+        class_size_dict = {'cifar10': 10}
+        cl = DataParameters(class_size_dict[data_name])
         
         super(DataParametersTrainer, self).__init__(
             data_name, net_name, device_name, random_seed, cl

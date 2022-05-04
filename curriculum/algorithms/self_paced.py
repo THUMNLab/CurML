@@ -8,32 +8,33 @@ from .base import BaseTrainer, BaseCL
 
 class SelfPaced(BaseCL):
     def __init__(self, start_rate, grow_epochs, 
-                 grow_fn, weight_fn, criterion):
+                 grow_fn, weight_fn):
         super(SelfPaced, self).__init__()
 
         self.name = 'selfpaced'
         self.epoch = 0
         self.net = None
         self.device = None
+        self.criterion = None
         self.weights = None
 
         self.start_rate = start_rate
         self.grow_epochs = grow_epochs
         self.grow_fn = grow_fn
         self.weight_fn = weight_fn
+
+
+    def model_prepare(self, net, device, epochs, 
+                      criterion, optimizer, lr_scheduler):
+        if self.net is None:
+            self.net = net
+        self.device = device
         self.criterion = criterion
 
 
-    def model_curriculum(self, net, device):
-        if self.net is None: self.net = net
-        if self.device is None: self.device = device
-        return net.to(device)
-
-
     def data_curriculum(self, loader):
-        loader = super().data_curriculum(loader)
-
         self.epoch += 1
+
         data_rate = min(1.0, self._subset_grow())
         data_size = int(self.data_size * data_rate)
 
@@ -43,10 +44,10 @@ class SelfPaced(BaseCL):
 
         if self.weight_fn == 'hard':
             dataset = Subset(self.dataset, tuple(range(data_size)))
-            return DataLoader(dataset, self.batch_size, shuffle=True)
         else:
             self.weights = self._data_weight(data_loss, data_threshold)
-            return loader
+            dataset = self.dataset
+        return DataLoader(dataset, self.batch_size, shuffle=True)
 
 
     def loss_curriculum(self, criterion, outputs, labels, indices):
@@ -93,13 +94,7 @@ class SelfPacedTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, random_seed, 
                  start_rate, grow_epochs, grow_fn, weight_fn):
         
-        if data_name in ['cifar10']:
-            cl = SelfPaced(
-                start_rate, grow_epochs, grow_fn, weight_fn,
-                torch.nn.CrossEntropyLoss(reduction='none'),
-            )
-        else:
-            raise NotImplementedError()
+        cl = SelfPaced(start_rate, grow_epochs, grow_fn, weight_fn)
 
         super(SelfPacedTrainer, self).__init__(
             data_name, net_name, device_name, random_seed, cl
