@@ -38,8 +38,10 @@ trainer = ImageClassifier(
     device_name=args.device,
     random_seed=args.seed,
     algorithm_name='babystep+superloss',
+    data_prepare=baby_step.data_prepare,
+    model_prepare=superloss.model_prepare,
     data_curriculum=baby_step.data_curriculum, 
-    model_curriculum=baby_step.model_curriculum, 
+    model_curriculum=superloss.model_curriculum, 
     loss_curriculum=superloss.loss_curriculum
 )
 trainer.fit()
