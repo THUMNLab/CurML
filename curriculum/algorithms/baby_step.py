@@ -31,11 +31,11 @@ class BabyStep(BaseCL):
 
 
 class BabyStepTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed, 
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed, 
                  start_rate, grow_rate, grow_interval):
         
         cl = BabyStep(start_rate, grow_rate, grow_interval)
         
         super(BabyStepTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )

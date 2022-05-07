@@ -156,11 +156,11 @@ class CoarseToFine(BaseCL):
 
 
 class CoarseToFineTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed,
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
                  cluster_K, num_classes, pretrained_net):
         
         cl = CoarseToFine(cluster_K, num_classes, pretrained_net)
 
         super(CoarseToFineTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )

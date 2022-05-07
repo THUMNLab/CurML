@@ -12,10 +12,10 @@ class MetaReweight(BaseCL):
 
 
 class MetaReweightTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed):
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
         
         cl = MetaReweight()
 
         super(MetaReweightTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )

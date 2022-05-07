@@ -9,7 +9,7 @@ from ..utils import get_logger, set_random
 
 
 class ImageClassifier():
-    def __init__(self, data_name, net_name, device_name, random_seed,
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
                  algorithm_name, data_prepare, model_prepare,
                  data_curriculum, model_curriculum, loss_curriculum):
 
@@ -22,9 +22,8 @@ class ImageClassifier():
         self.loss_curriculum = loss_curriculum
 
         self._init_dataloader(data_name)
-        self._init_model(net_name, device_name)
-        self._init_logger(algorithm_name, data_name, 
-                          net_name, random_seed)
+        self._init_model(net_name, device_name, num_epochs)
+        self._init_logger(algorithm_name, data_name, net_name, random_seed)
 
 
     def _init_dataloader(self, data_name):
@@ -49,13 +48,13 @@ class ImageClassifier():
         self.data_prepare(self.train_loader)
 
 
-    def _init_model(self, net_name, device_name):
+    def _init_model(self, net_name, device_name, num_epochs):
         self.net = get_net(net_name)
         self.device = torch.device(device_name \
             if torch.cuda.is_available() else 'cpu')
         self.net.to(self.device)
 
-        self.epochs = 200
+        self.epochs = num_epochs
         self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
         self.optimizer = torch.optim.SGD(
             self.net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4

@@ -91,11 +91,11 @@ class SelfPaced(BaseCL):
 
 
 class SelfPacedTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed, 
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed, 
                  start_rate, grow_epochs, grow_fn, weight_fn):
         
         cl = SelfPaced(start_rate, grow_epochs, grow_fn, weight_fn)
 
         super(SelfPacedTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )

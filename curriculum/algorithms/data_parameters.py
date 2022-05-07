@@ -64,13 +64,13 @@ class DataParameters(BaseCL):
 
 
 class DataParametersTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed):
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
         
         class_size_dict = {'cifar10': 10}
         cl = DataParameters(class_size_dict[data_name])
         
         super(DataParametersTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )
 
 

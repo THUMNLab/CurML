@@ -51,11 +51,11 @@ class BaseCL():
 class BaseTrainer():
 
     def __init__(self, data_name, net_name, device_name, 
-                 random_seed, cl=BaseCL()):
+                 num_epochs, random_seed, cl=BaseCL()):
         
         if data_name in ['cifar10']:
             self.trainer = ImageClassifier(
-                data_name, net_name, device_name, random_seed,
+                data_name, net_name, device_name, num_epochs, random_seed,
                 cl.name, cl.data_prepare, cl.model_prepare,
                 cl.data_curriculum, cl.model_curriculum, cl.loss_curriculum,
             )

@@ -116,7 +116,7 @@ class Adaptive(BaseCL):
 
 
 class AdaptiveTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed,
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
                  num_classes, pace_p, pace_q, pace_r, inv,
                  alpha, gamma, gamma_decay, bottom_gamma, pretrained_net):
         
@@ -124,6 +124,6 @@ class AdaptiveTrainer(BaseTrainer):
                  alpha, gamma, gamma_decay, bottom_gamma, pretrained_net)
 
         super(AdaptiveTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )
 

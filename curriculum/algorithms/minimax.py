@@ -260,7 +260,7 @@ class Minimax(BaseCL):
 
 
 class MinimaxTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed,
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
                  schedule_epoch, warm_epoch, lam, minlam, gamma, delta,
                  initial_size, fe_alpha, fe_beta, fe_gamma, fe_lambda,
                  fe_entropy, fe_gsrow, fe_central_op, fe_central_min, fe_central_sum,
@@ -272,5 +272,5 @@ class MinimaxTrainer(BaseTrainer):
                  num_classes)
 
         super(MinimaxTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )

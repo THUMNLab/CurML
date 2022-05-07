@@ -8,8 +8,9 @@ from curriculum.algorithms import \
 parser = argparse.ArgumentParser()
 parser.add_argument('--data', type=str, default='cifar10')
 parser.add_argument('--net', type=str, default='resnet')
-parser.add_argument('--seed', type=int, default='42')
 parser.add_argument('--device', type=str, default='cuda')
+parser.add_argument('--epochs', type=int, default=200)
+parser.add_argument('--seed', type=int, default=42)
 parser.add_argument('--num_classes', type=int, default=10)
 parser.add_argument('--pace_p', type=float, default=0.1)
 parser.add_argument('--pace_q', type=float, default=1.2)
@@ -25,6 +26,7 @@ pretrainer = BaseTrainer(
     data_name=args.data,
     net_name=args.net,
     device_name=args.device,
+    num_epochs=args.epochs,
     random_seed=2,
 )
 pretrainer.fit()
@@ -36,6 +38,7 @@ trainer = AdaptiveTrainer(
     data_name=args.data,
     net_name=args.net,
     device_name=args.device,
+    num_epochs=args.epochs,
     random_seed=args.seed,
     num_classes=args.num_classes,
     pace_p=args.pace_p,

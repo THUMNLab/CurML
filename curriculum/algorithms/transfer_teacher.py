@@ -22,7 +22,7 @@ class TransferTeacher(SelfPaced):
 
 
 class TransferTeacherTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, random_seed, 
+    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed, 
                  start_rate, grow_epochs, grow_fn, weight_fn, teacher_net):
 
         cl = TransferTeacher(
@@ -30,5 +30,5 @@ class TransferTeacherTrainer(BaseTrainer):
         )
 
         super(TransferTeacherTrainer, self).__init__(
-            data_name, net_name, device_name, random_seed, cl
+            data_name, net_name, device_name, num_epochs, random_seed, cl
         )
