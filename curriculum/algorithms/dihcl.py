@@ -1,13 +1,14 @@
+import numpy as np
 import torch
 from torch.utils.data import DataLoader, Subset
-import numpy as np
+
 from .base import BaseTrainer, BaseCL
 
 
 
 class DIHCL(BaseCL):
-    def __init__(self, warm_epoch, discount_factor, decay_rate, bottom_size,
-                 type, sample_type, cei):
+    def __init__(self, warm_epoch, discount_factor, decay_rate, 
+                 bottom_size, type, sample_type, cei):
         super(DIHCL, self).__init__()
 
         self.name = 'dihcl'
@@ -21,34 +22,36 @@ class DIHCL(BaseCL):
         self.lr_array = np.array([0, ])
         
         self.epoch_lr = 0
-        if warm_epoch is not None:
-            self.warm_epoch = warm_epoch
-            if self.warm_epoch < 1:
-                raise ValueError("Should have at least 1 warm epoch.\n")
-        else:
-            self.warm_epoch = 5
-        if self.sample_type == 'beta':
-            if cei == None:
-                self.cei = 1
-            else:
-                self.cei = cei
+        self.warm_epoch = warm_epoch
+        assert self.warm_epoch >= 1, \
+            'Assert Error: there should be at least 1 warm epoch.'
 
-    def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
+        if self.sample_type == 'beta':
+            self.cei = cei
+
+
+    def data_prepare(self, loader):
+        super().data_prepare(loader)
+
+        self.dih_loss = np.zeros(self.data_size)
+        self.train_set = np.arange(self.data_size)
+        self.probability = np.ones(self.data_size) / self.data_size
+        self.old_loss = np.zeros(self.data_size)
+        self.data_index = np.zeros(self.data_size)
+
+
+    def model_prepare(self, net, device, epochs, 
+                      criterion, optimizer, lr_scheduler):
         self.lr_scheduler = lr_scheduler
     
+
     def data_curriculum(self, loader):
-
-        if self.epoch == 0:
-            self.dih_loss = np.zeros(self.data_size)
-            self.train_set = np.arange(self.data_size)
-            self.probability = np.ones(self.data_size) / self.data_size
-            self.old_loss = np.zeros(self.data_size)
-            self.data_index = np.zeros(self.data_size)
-
         self.cnt = 0
         self.epoch += 1
         if self.epoch > 1:
-            self.lr_array = np.append(self.lr_array, self.lr_array[len(self.lr_array) - 1] + self.epoch_lr) # prefix sum
+            self.lr_array = np.append(self.lr_array, 
+                self.lr_array[len(self.lr_array) - 1] + self.epoch_lr
+            ) # prefix sum
 
         if self.epoch <= self.warm_epoch:
             self.train_set = np.arange(self.data_size)
@@ -56,13 +59,15 @@ class DIHCL(BaseCL):
             self._probability_regularize()
             self.rate = max(self.rate * self.decay_rate, self.bottom_size)
             select = int(np.floor(self.rate * self.data_size))
-            self.train_set = np.random.choice(self.data_size, select, p=self.probability, replace=False)
-        dataset_ = Subset(self.dataset, self.train_set)
-        return DataLoader(dataset_, self.batch_size, shuffle=False)
+            self.train_set = np.random.choice(
+                self.data_size, select, p=self.probability, replace=False
+            )
+
+        dataset = Subset(self.dataset, self.train_set)
+        return DataLoader(dataset, self.batch_size, shuffle=False)
 
 
     def _probability_regularize(self):
-    
         if self.sample_type == 'rand':
             self.probability = self.dih_loss
 
@@ -88,7 +93,7 @@ class DIHCL(BaseCL):
         losses = criterion(outputs, labels)
         self.epoch_lr = self.lr_scheduler.get_last_lr()[0]
         if self.type == 'prediction_flip':
-            cnt_ = 0
+            cnt = 0
             assert(len(losses) == len(labels))
 
         for loss in losses:
@@ -119,13 +124,12 @@ class DIHCL(BaseCL):
                     lr_sum = self.lr_array[len(self.lr_array) - 1] + self.epoch_lr
                 else:
                     lr_sum = self.lr_array[len(self.lr_array) - 1] - self.lr_array[int(self.data_index[index]) - 1] + self.epoch_lr
-                process_loss = abs((prediction_label.item() == labels[cnt_].item()) - self.old_loss[index])
+                process_loss = abs((prediction_label.item() == labels[cnt].item()) - self.old_loss[index])
                 lr_sum = max(lr_sum, 1e-3)
                 process_loss = process_loss / lr_sum
-                self.old_loss[index] = abs(prediction_label.item() == labels[cnt_].item())
+                self.old_loss[index] = abs(prediction_label.item() == labels[cnt].item())
                 self.data_index[index] = self.epoch
-                cnt_ += 1
-
+                cnt += 1
             else:
                 return NotImplementedError()
 
@@ -133,8 +137,8 @@ class DIHCL(BaseCL):
                                     + self.discount_factor * process_loss
             assert(self.dih_loss[index] >= 0)
             self.cnt += 1
-        losses = torch.mean(losses)
-        return losses
+
+        return torch.mean(losses)
 
 
 
