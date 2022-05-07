@@ -37,6 +37,7 @@ class Minimax(BaseCL):
         self.fe_central_min = fe_central_min
         self.fe_central_sum = fe_central_sum
     
+
     def data_prepare(self, loader):
         self.dataloader = loader
         self.dataset = self.CLDataset(loader.dataset)
@@ -54,6 +55,7 @@ class Minimax(BaseCL):
         self.centrality = np.zeros(self.data_size)
         self.train_set = np.arange(self.data_size)
 
+
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.total_epoch = epochs
         if self.delta is None:
@@ -65,6 +67,7 @@ class Minimax(BaseCL):
         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.total_epoch)
         self.device = device
         self.model.to(self.device)
+
 
     def data_curriculum(self, loader):
         if self.epoch % self.schedule_epoch == 0:
@@ -85,13 +88,14 @@ class Minimax(BaseCL):
             pro = self.loss + self.lam * self.centrality
             pro = pro / np.sum(pro)
             self.train_set = np.random.choice(self.data_size, int(self.siz), p=pro, replace=False)
-            dataset_ = Subset(self.dataset, self.train_set)
-            dataloader = DataLoader(dataset_, self.batch_size, shuffle=False)
+            dataset = Subset(self.dataset, self.train_set)
+            dataloader = DataLoader(dataset, self.batch_size, shuffle=False)
 
         self.epoch += 1
         self.cnt = 0
         return dataloader
     
+
     def loss_curriculum(self, criterion, outputs, labels, indices):
         losses = criterion(outputs, labels)
         for loss in losses:
@@ -99,6 +103,7 @@ class Minimax(BaseCL):
             self.cnt += 1
         return torch.mean(losses)
     
+
     def _pretrain(self, dataloader):
         self.model.train()
         for step, data in enumerate(dataloader):
@@ -111,6 +116,7 @@ class Minimax(BaseCL):
             self.optimizer.step()
         self.scheduler.step()
     
+
     def _pretest(self, dataloader):
         all_feature = np.array([])
         self.model.eval()
@@ -122,6 +128,7 @@ class Minimax(BaseCL):
         all_feature = all_feature.reshape(int(self.data_size), int(len(all_feature) / self.data_size))
         return all_feature
     
+
     def _entropy(self, labels, base=None):
         num_labels = len(labels)
         value, count = np.unique(labels, return_counts=True)
@@ -136,12 +143,14 @@ class Minimax(BaseCL):
             entro -= iter * math.log(iter, base)
         return entro
     
+
     def _swarp(self, feature, alpha, beta):
         swarp_epsilon = 1e-30
         nonzero_indice = (feature > swarp_epsilon)
         if np.any(nonzero_indice) > 0:
             feature[nonzero_indice] = 1.0 / (1 + (feature[nonzero_indice] ** (1 / np.log2(beta)) - 1) ** alpha)
         return feature
+
 
     def _compute_centrality(self, feature, fe_alpha, fe_beta, fe_gamma, fe_lambda, fe_gsmin, fe_entropy, fe_central_op, fe_central_min, fe_central_sum):
         # First process the feature matrix, using gamma correction
@@ -183,6 +192,7 @@ class Minimax(BaseCL):
                     centrality = centrality / np.sum(centrality)
         return centrality
         
+
     class BasicBlock(nn.Module):
         expansion = 1
 

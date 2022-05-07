@@ -27,6 +27,7 @@ class Adaptive(BaseCL):
         self.num_classes = num_classes
         self.pretrained_model = pretrained_net
 
+
     def data_prepare(self, loader):
         self.dataloader = loader
         self.dataset = self.CLDataset(loader.dataset)
@@ -34,12 +35,14 @@ class Adaptive(BaseCL):
         self.batch_size = loader.batch_size
         self.n_batches = (self.data_size - 1) // self.batch_size + 1
 
+
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
         self.model = net
         self.critertion = criterion
         self.total_epoch = epochs
     
+
     def data_curriculum(self, loader):
         if self.epoch == 0:
             self.pretrained_model.to(self.device)
@@ -97,6 +100,7 @@ class Adaptive(BaseCL):
             self.pretrained_output = torch.cat((self.pretrained_output, outputs), 0)
             loss = self.crossEntrophy(outputs, labels)
             self.difficulty = torch.cat((self.difficulty, loss), 0)
+
 
     def _difficulty_measurer(self):
     

@@ -2,6 +2,7 @@ import math
 import torch
 import torch.nn as nn
 import numpy as np
+
 from .base import BaseTrainer, BaseCL
 
 
@@ -25,6 +26,7 @@ class CoarseToFine(BaseCL):
 
         self.pretrained_model = pretrained_net
 
+
     def data_prepare(self, loader):
         self.dataloader = loader
         self.dataset = self.CLDataset(loader.dataset)
@@ -32,6 +34,7 @@ class CoarseToFine(BaseCL):
         self.batch_size = loader.batch_size
         self.n_batches = (self.data_size - 1) // self.batch_size + 1
     
+
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
         try:
@@ -40,6 +43,7 @@ class CoarseToFine(BaseCL):
             raise ValueError("net should have a linear classifier")
         self.total_epoch = epochs
     
+
     def data_curriculum(self, loader):
         if self.epoch == 0:
             self._pretrain()
@@ -57,12 +61,14 @@ class CoarseToFine(BaseCL):
             self.classify_cnt += 1
         return super().data_curriculum(loader)
     
+
     def loss_curriculum(self, criterion, outputs, labels, indices):
         cluster_label = torch.Tensor([self.classify_labels[self.classify_tot - self.classify_cnt][labels[index]] for index in range(len(labels))])
         cluster_label = cluster_label.type(torch.LongTensor).to(self.device)
         loss = torch.mean(criterion(outputs, cluster_label))
         return loss
     
+
     def _pretrain(self):
         # calculate confusion matrix
         
@@ -94,7 +100,6 @@ class CoarseToFine(BaseCL):
 
     def _affinity_clustering(self):
         # use affinity clustering to cluster the data
-
         tot = self.num_classes
         self.num_cluster = np.array([tot])
         classify_labels = [[-1 for inner_index in range(tot)] for index in range(tot)]
@@ -144,7 +149,6 @@ class CoarseToFine(BaseCL):
         print("curriculum schedule = ", self.schedule)
 
     def _scheduler(self):
-
         self.schedule = np.array([0])
         for index in range(self.classify_tot):
             self.schedule = np.append(self.schedule, np.floor(self.num_cluster[self.classify_tot - 1 - index] * self.total_epoch / np.sum(self.num_cluster)))

@@ -1,13 +1,82 @@
+import math
+import torch
+import torch.nn as nn
+
+
+
+######## KernelConv2d for CBS #######
+class KernelConv2d(nn.Module):
+    def __init__(self, conv, kernel_size, std):
+        super(KernelConv2d, self).__init__()
+
+        self.conv = conv
+
+        self.kernel_size = kernel_size
+        self.std = std
+        self.channels = conv.out_channels
+        self.kernel = self._get_gaussian_filter(
+            self.kernel_size, self.std, self.channels
+        )
+
+
+    def forward(self, inputs):
+        return self.kernel(self.conv(inputs))
+
+
+    def model_curriculum(self, std):
+        self.std = std
+        self.kernel = self._get_gaussian_filter(
+            self.kernel_size, self.std, self.channels
+        )
+
+
+    def _get_gaussian_filter(self, kernel_size, sigma, channels):
+        # Create a x, y coordinate grid of shape (kernel_size, kernel_size, 2)
+        x_coord = torch.arange(kernel_size)
+        x_grid = x_coord.repeat(kernel_size).view(kernel_size, kernel_size)
+        y_grid = x_grid.t()
+        xy_grid = torch.stack([x_grid, y_grid], dim=-1).float()
+
+        mean = (kernel_size - 1)/2.
+        variance = sigma**2.
+
+        # Calculate the 2-dimensional gaussian kernel which is
+        # the product of two gaussian distributions for two different
+        # variables (in this case called x and y)
+        gaussian_kernel = (1./(2.*math.pi*variance)) *\
+                        torch.exp(
+                            -torch.sum((xy_grid - mean)**2., dim=-1) /\
+                            (2*variance)
+                        )
+
+        # Make sure sum of values in gaussian kernel equals 1.
+        gaussian_kernel = gaussian_kernel / torch.sum(gaussian_kernel)
+
+        # Reshape to 2d depthwise convolutional weight
+        gaussian_kernel = gaussian_kernel.view(1, 1, kernel_size, kernel_size)
+        gaussian_kernel = gaussian_kernel.repeat(channels, 1, 1, 1)
+
+        if kernel_size == 3:
+            padding = 1
+        elif kernel_size == 5:
+            padding = 2
+        else:
+            padding = 0
+
+        gaussian_filter = nn.Conv2d(in_channels=channels, out_channels=channels,
+                                    kernel_size=kernel_size, groups=channels,
+                                    bias=False, padding=padding)
+
+        gaussian_filter.weight.data = gaussian_kernel
+        gaussian_filter.weight.requires_grad = False
+        
+        return gaussian_filter
 
 
 
 ######## SparseSGD for DataParameters ########
-
 # For licensing see accompanying LICENSE file.
 # Copyright (C) 2019 Apple Inc. All Rights Reserved.
-#
-import torch
-
 class SparseSGD(torch.optim.SGD):
     """
     This class implements SGD for optimizing parameters where at each iteration only few parameters obtain a gradient.
