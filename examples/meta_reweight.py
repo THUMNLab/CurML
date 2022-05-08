@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--data', type=str, default='cifar10')
 parser.add_argument('--net', type=str, default='resnet')
 parser.add_argument('--device', type=str, default='cuda')
-parser.add_argument('--epochs', type=int, default=200)
+parser.add_argument('--epochs', type=int, default=20000)
 parser.add_argument('--seed', type=int, default=42)
 args = parser.parse_args()
 

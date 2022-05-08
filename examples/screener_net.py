@@ -1,6 +1,7 @@
 import argparse
 
 from curriculum.algorithms import ScreenerNet
+from curriculum.algorithms.screener_net import ScreenerNetTrainer
 
 
 
@@ -13,7 +14,7 @@ parser.add_argument('--seed', type=int, default=42)
 args = parser.parse_args()
 
 
-trainer = ScreenerNet(
+trainer = ScreenerNetTrainer(
     data_name=args.data,
     net_name=args.net,
     device_name=args.device,

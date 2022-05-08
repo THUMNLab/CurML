@@ -6,3 +6,4 @@ curriculum.egg-info
 /runs
 
 *.log
+*.txt
