@@ -13,7 +13,7 @@ parser.add_argument('--seed', type=int, default=42)
 parser.add_argument('--start_rate', type=float, default=0.0)
 parser.add_argument('--grow_epochs', type=int, default=200)
 parser.add_argument('--grow_fn', type=str, default='linear')
-parser.add_argument('--weight_fn', type=str, default='polynomial-4')
+parser.add_argument('--weight_fn', type=str, default='hard')
 args = parser.parse_args()
 
 

@@ -2,8 +2,8 @@ import logging
 
 
 
-def get_logger(log_file):
-    logger = logging.getLogger()
+def get_logger(log_file, log_name=None):
+    logger = logging.getLogger(log_name)
     logger.setLevel(logging.INFO)
 
     log_format = logging.Formatter(

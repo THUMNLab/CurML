@@ -67,9 +67,9 @@ class BaseTrainer():
         return self.trainer.fit()
 
 
-    def evaluate(self):
-        return self.trainer.evaluate()
+    def evaluate(self, net_dir=None):
+        return self.trainer.evaluate(net_dir)
 
     
-    def export(self):
-        return self.trainer.export()
+    def export(self, net_dir=None):
+        return self.trainer.export(net_dir)

@@ -10,8 +10,8 @@ from ..utils import get_logger, set_random
 
 class ImageClassifier():
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
-                 algorithm_name, data_prepare, model_prepare,
-                 data_curriculum, model_curriculum, loss_curriculum):
+                 algorithm_name, data_prepare, model_prepare, data_curriculum, 
+                 model_curriculum, loss_curriculum):
 
         self.random_seed = random_seed
 
@@ -86,7 +86,7 @@ class ImageClassifier():
         else: print('The directory %s has already existed.' % (self.log_dir))
         
         log_file = os.path.join(self.log_dir, 'train.log')
-        self.logger = get_logger(log_file)
+        self.logger = get_logger(log_file, log_info)
 
 
     def _train(self):
@@ -160,20 +160,21 @@ class ImageClassifier():
         self._train()
 
 
-    def evaluate(self):
-        self._load_best_net()
+    def evaluate(self, net_dir=None):
+        self._load_best_net(net_dir)
         test_acc = self._valid(self.test_loader)
         self.logger.info('Final Test Acc = %.4f' % (test_acc))
         return test_acc
 
 
-    def export(self):
-        self._load_best_net()
+    def export(self, net_dir=None):
+        self._load_best_net(net_dir)
         return self.net
 
 
-    def _load_best_net(self):
-        net_file = os.path.join(self.log_dir, 'net.pkl')
+    def _load_best_net(self, net_dir):
+        if net_dir is None: net_dir = self.log_dir
+        net_file = os.path.join(net_dir, 'net.pkl')
         assert os.path.exists(net_file), \
             'Assert Error: the net file does not exist'
         self.net.load_state_dict(torch.load(net_file))

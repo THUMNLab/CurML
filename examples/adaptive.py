@@ -20,18 +20,21 @@ parser.add_argument('--alpha', type=float, default=0.7)
 parser.add_argument('--gamma', type=float, default=0.1)
 parser.add_argument('--gamma_decay', type=float, default=None)
 parser.add_argument('--bottom_gamma', type=float, default=0.1)
+parser.add_argument('--teacher_dir', type=str, default=None)
 args = parser.parse_args()
+
 
 pretrainer = BaseTrainer(
     data_name=args.data,
     net_name=args.net,
     device_name=args.device,
     num_epochs=args.epochs,
-    random_seed=2,
+    random_seed=42,
 )
-pretrainer.fit()
-pretrainer.evaluate()
-teacher_net = pretrainer.export()
+if args.teacher_dir is None:
+    pretrainer.fit()
+pretrainer.evaluate(args.teacher_dir)
+teacher_net = pretrainer.export(args.teacher_dir)
 
 
 trainer = AdaptiveTrainer(
