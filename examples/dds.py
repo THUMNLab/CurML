@@ -1,6 +1,6 @@
 import argparse
 
-from curriculum.algorithms import MetaWeightNetTrainer
+from curriculum.algorithms import DDSTrainer
 
 
 
@@ -14,7 +14,7 @@ parser.add_argument('--type', type=int, default=1)
 args = parser.parse_args()
 
 
-trainer = MetaWeightNetTrainer(
+trainer = DDSTrainer(
     data_name=args.data,
     net_name=args.net,
     device_name=args.device,
