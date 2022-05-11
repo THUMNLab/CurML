@@ -10,7 +10,9 @@ parser.add_argument('--net', type=str, default='resnet')
 parser.add_argument('--device', type=str, default='cuda')
 parser.add_argument('--epochs', type=int, default=200)
 parser.add_argument('--seed', type=int, default=42)
-parser.add_argument('--type', type=int, default=1)
+parser.add_argument('--catnum', type=int, default=10)
+parser.add_argument('--epsilon', type=float, default=1e-3)
+parser.add_argument('--lr', type=float, default=1e-4)
 args = parser.parse_args()
 
 
@@ -20,6 +22,9 @@ trainer = DDSTrainer(
     device_name=args.device,
     num_epochs=args.epochs,
     random_seed=args.seed,
+    catnum=args.catnum,
+    epsilon=args.epsilon,
+    lr=args.lr,
 )
 trainer.fit()
 trainer.evaluate()

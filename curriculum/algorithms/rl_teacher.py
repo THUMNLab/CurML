@@ -235,7 +235,7 @@ class RLTeacher_4(BaseCL):
     def __init__(self, ):
         super(RLTeacher_4, self).__init__()
 
-        self.name = 'rlteacher_1'
+        self.name = 'rlteacher_4'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         self.partnum = 10
@@ -301,38 +301,17 @@ class RLTeacher_4(BaseCL):
         return data_loader
 
 
-class RLTeacherTrainer_1(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
+
+class RLTeacherTrainer(BaseTrainer):
+    def __init__(self, data_name, net_name, device_name, 
+                 num_epochs, random_seed, policy):
         
-        cl = RLTeacher_1()
+        cl_dict = {'online': RLTeacher_1,
+                   'naive': RLTeacher_2,
+                   'window': RLTeacher_3,
+                   'sampling': RLTeacher_4}
+        cl = cl_dict[policy]
 
-        super(RLTeacherTrainer_1, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
-
-class RLTeacherTrainer_2(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
-        
-        cl = RLTeacher_2()
-
-        super(RLTeacherTrainer_2, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
-
-class RLTeacherTrainer_3(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
-        
-        cl = RLTeacher_3()
-
-        super(RLTeacherTrainer_3, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
-
-class RLTeacherTrainer_4(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
-        
-        cl = RLTeacher_4()
-
-        super(RLTeacherTrainer_4, self).__init__(
+        super(RLTeacherTrainer, self).__init__(
             data_name, net_name, device_name, num_epochs, random_seed, cl
         )

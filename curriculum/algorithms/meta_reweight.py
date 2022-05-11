@@ -6,24 +6,16 @@ import torch.nn as nn
 from torch.optim.sgd import SGD
 import copy
 
-def set_parameter(current_module, name, parameters):
-        if '.' in name:
-            name_split = name.split('.')
-            module_name = name_split[0]
-            rest_name = '.'.join(name_split[1:])
-            for children_name, children in current_module.named_children():
-                if module_name == children_name:
-                    set_parameter(children, rest_name, parameters)
-                    break
-        else:
-            current_module._parameters[name] = parameters
+from .utils import set_parameter
+
+
 
 class MetaReweight(BaseCL):
     def __init__(self, ):
         super(MetaReweight, self).__init__()
-
         self.name = 'metareweight'
     
+
     def randomSplit(self):
         """split data into train and validation data by proportion 9:1"""
         sample_size = self.data_size//10
@@ -105,11 +97,8 @@ class MetaReweight(BaseCL):
         else:
             w = w_tilde
         w = w * self.batch_size
-
-        
-        
-
         return [[image, labels, w]]     
+
 
 
 class MetaReweightTrainer(BaseTrainer):

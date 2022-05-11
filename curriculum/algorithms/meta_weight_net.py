@@ -39,7 +39,6 @@ class MetaWeightNet(BaseCL):
         self.randomSplit()
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
-        # super().model_prepare(net, device, epochs, criterion, optimizer, lr_scheduler)
         self.model = net.to(device)
         self.device = device
         self.criterion = criterion
@@ -119,12 +118,3 @@ class MetaWeightNetTrainer(BaseTrainer):
         super(MetaWeightNetTrainer, self).__init__(
             data_name, net_name, device_name, num_epochs, random_seed, cl
         )
-
-class VNet_(nn.Module):
-    def __init__(self, input, hidden):
-        super(VNet_, self).__init__()
-        self.linear1 = nn.Linear(input, hidden)
-
-    def forward(self, x):
-        x = self.linear1(x)
-        return torch.sigmoid(x)

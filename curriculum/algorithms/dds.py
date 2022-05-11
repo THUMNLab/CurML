@@ -8,16 +8,18 @@ from torch.utils.data import DataLoader
 from torch.optim.sgd import SGD
 import numpy as np
 
-from .utils import VNet, set_parameter
+from .utils import VNet_, set_parameter
+
+
 
 class DDS(BaseCL):
-    def __init__(self, ):
+    def __init__(self, catnum, epsilon, lr):
         super(DDS, self).__init__()
 
         self.name = 'dds'
-        self.catnum = 10
-        self.epsilon = 1e-3
-        self.lr = 1e-4     
+        self.catnum = catnum
+        self.epsilon = epsilon
+        self.lr = lr   
 
     def randomSplit(self):
         """split data into train and validation data by proportion 9:1"""
@@ -146,9 +148,11 @@ class DDS(BaseCL):
         return [[a, b, w_]] 
 
 class DDSTrainer(BaseTrainer):
-    def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
+    def __init__(self, data_name, net_name, 
+                 device_name, num_epochs, random_seed,
+                 catnum, epsilon, lr):
         
-        cl = DDS()
+        cl = DDS(catnum, epsilon, lr)
 
         super(DDSTrainer, self).__init__(
             data_name, net_name, device_name, num_epochs, random_seed, cl

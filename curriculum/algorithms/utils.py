@@ -4,7 +4,7 @@ import torch.nn as nn
 
 
 
-######## VNet for MetaWeightNet and DDS #######
+######## VNet for MetaReweight, MetaWeightNet and DDS #######
 class VNet(nn.Module):
     def __init__(self, input, hidden, output):
         super(VNet, self).__init__()
@@ -18,6 +18,14 @@ class VNet(nn.Module):
         out = self.linear2(x)
         return torch.sigmoid(out)
 
+class VNet_(nn.Module):
+    def __init__(self, input, hidden):
+        super(VNet_, self).__init__()
+        self.linear1 = nn.Linear(input, hidden)
+
+    def forward(self, x):
+        x = self.linear1(x)
+        return torch.sigmoid(x)
 
 def set_parameter(current_module, name, parameters):
         if '.' in name:
@@ -30,6 +38,7 @@ def set_parameter(current_module, name, parameters):
                     break
         else:
             current_module._parameters[name] = parameters
+
 
 
 ######## KernelConv2d for CBS #######
