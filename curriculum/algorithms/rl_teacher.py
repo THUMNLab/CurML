@@ -310,7 +310,7 @@ class RLTeacherTrainer(BaseTrainer):
                    'naive': RLTeacher_2,
                    'window': RLTeacher_3,
                    'sampling': RLTeacher_4}
-        cl = cl_dict[policy]
+        cl = cl_dict[policy]()
 
         super(RLTeacherTrainer, self).__init__(
             data_name, net_name, device_name, num_epochs, random_seed, cl
