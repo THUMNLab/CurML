@@ -71,7 +71,7 @@ class ImageClassifier():
     
     def _init_logger(self, algorithm_name, data_name, 
                      net_name, random_seed):
-        self.log_interval = 10
+        self.log_interval = 1
 
         # log_info = '%s-%s-%s-%d' % (
         #     algorithm_name, data_name, net_name, random_seed,

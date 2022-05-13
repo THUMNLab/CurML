@@ -1,8 +1,7 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-from ..solvers import *
-
+from ..trainers import *
 
 
 class BaseCL():

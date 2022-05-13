@@ -1,7 +1,7 @@
 import math
 import argparse
 
-from curriculum.solvers import ImageClassifier
+from curriculum.trainers import ImageClassifier
 from curriculum.algorithms import BabyStep, Superloss
 
 
