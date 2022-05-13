@@ -1,6 +1,7 @@
 # The code is developed based on
 # https://github.com/kuangliu/pytorch-cifar
 
+from .convnet import *
 from .vgg import *
 from .dpn import *
 from .lenet import *
@@ -24,6 +25,7 @@ from .dla import *
 
 def get_net(net_name):
     net_dict = {
+        'convnet': ConvNet,
         'vgg': VGG19,
         'resnet': ResNet18,
         'preactresnet': PreActResNet18,
@@ -36,6 +38,7 @@ def get_net(net_name):
         'senet': SENet18,
         'efficientnet': EfficientNetB0,
         'regnetx': RegNetX_200MF,
+
         # TODO: more version of the nets above
     }
 

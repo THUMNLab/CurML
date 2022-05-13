@@ -122,8 +122,8 @@ class ImageClassifier():
             
             self.lr_scheduler.step()
             self.logger.info(
-                '[%3d] Train data = %5d  Loss = %.4f Train Acc = %.4f Time = %.2f'
-                % (epoch + 1, total, train_loss / (step + 1), correct / total, time.time() - t)
+                '[%3d]  Train data = %6d  Train Acc = %.4f  Loss = %.4f  Time = %.2f'
+                % (epoch + 1, total, correct / total, train_loss / (step + 1), time.time() - t)
             )
 
             if (epoch + 1) % self.log_interval == 0:
@@ -132,7 +132,7 @@ class ImageClassifier():
                     best_acc = valid_acc
                     torch.save(net.state_dict(), os.path.join(self.log_dir, 'net.pkl'))
                 self.logger.info(
-                    '[%3d] Valid data = %d Valid Acc = %.4f' 
+                    '[%3d]  Valid data = %6d  Valid Acc = %.4f' 
                     % (epoch + 1, len(self.valid_loader.dataset), valid_acc)
                 )
             
