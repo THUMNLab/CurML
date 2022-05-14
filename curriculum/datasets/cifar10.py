@@ -2,7 +2,7 @@
 # https://gist.github.com/kevinzakka/d33bf8d6c7f06a9d8c76d97a7879f5cb#file-data_loader-py
 
 
-
+import random
 import numpy as np
 
 from torch.utils.data import Subset
@@ -13,9 +13,9 @@ from .utils import Cutout
 
 
 def get_cifar10_dataset(data_dir, valid_ratio=0.1, shuffle=True, 
-                        augment=True, cutout_length=0):
+                        augment=True, cutout_length=0, noise_ratio=0.0):
     train_dataset, valid_dataset = get_train_valid_dataset(
-        data_dir, valid_ratio, shuffle, augment, cutout_length
+        data_dir, valid_ratio, shuffle, augment, cutout_length, noise_ratio
     )
     test_dataset = get_test_dataset(data_dir)
 
@@ -23,7 +23,7 @@ def get_cifar10_dataset(data_dir, valid_ratio=0.1, shuffle=True,
 
 
 def get_train_valid_dataset(data_dir, valid_ratio, shuffle, 
-                            augment, cutout_length):
+                            augment, cutout_length, noise_ratio):
     assert ((valid_ratio >= 0) and (valid_ratio <= 1)), \
         'Assert Error: valid_size should be in the range [0, 1].'
 
@@ -43,10 +43,14 @@ def get_train_valid_dataset(data_dir, valid_ratio, shuffle,
     
     train_transform = transforms.Compose(transf + normalize + cutout)
     valid_transform = transforms.Compose(normalize)
+    noise_transform = transforms.Lambda(
+        lambda y: random.choice(list(range(y)) + list(range(y + 1, 10))) \
+                  if random.random() < noise_ratio else y
+    ) if noise_ratio > 0.0 else transforms.Compose([])
 
     train_dataset = datasets.CIFAR10(
-        root=data_dir, train=True,
-        download=True, transform=train_transform,
+        root=data_dir, train=True, download=True, 
+        transform=train_transform, target_transform=noise_transform,
     )
     valid_dataset = datasets.CIFAR10(
         root=data_dir, train=True,

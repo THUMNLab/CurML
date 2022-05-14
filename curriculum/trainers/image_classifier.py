@@ -2,7 +2,7 @@ import os
 import time
 import torch
 
-from ..datasets import get_dataset
+from ..datasets import get_dataset_with_noise
 from ..backbones import get_net
 from ..utils import get_logger, set_random
 
@@ -30,7 +30,7 @@ class ImageClassifier():
         set_random(self.random_seed)
 
         train_dataset, valid_dataset, test_dataset = \
-            get_dataset('./data', data_name)
+            get_dataset_with_noise('./data', data_name)
 
         self.train_loader = torch.utils.data.DataLoader(
             train_dataset, batch_size=128, shuffle=True,
@@ -106,6 +106,9 @@ class ImageClassifier():
                 inputs = data[0].to(self.device)
                 labels = data[1].to(self.device)
                 indices = data[2].to(self.device)
+                print(labels)
+                print(indices)
+                input()
 
                 self.optimizer.zero_grad()
                 outputs = net(inputs)

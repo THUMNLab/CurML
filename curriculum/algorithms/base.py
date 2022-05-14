@@ -52,7 +52,8 @@ class BaseTrainer():
     def __init__(self, data_name, net_name, device_name, 
                  num_epochs, random_seed, cl=BaseCL()):
         
-        if data_name in ['cifar10']:
+        if data_name.startswith('cifar') \
+        or data_name.startswith('image'):
             self.trainer = ImageClassifier(
                 data_name, net_name, device_name, num_epochs, random_seed,
                 cl.name, cl.data_prepare, cl.model_prepare,
