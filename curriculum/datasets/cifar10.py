@@ -12,19 +12,17 @@ from .utils import Cutout
 
 
 
-def get_cifar10_dataset(data_dir, valid_ratio=0.1,
-                        shuffle=True, random_seed=43,
+def get_cifar10_dataset(data_dir, valid_ratio=0.1, shuffle=True, 
                         augment=True, cutout_length=0):
     train_dataset, valid_dataset = get_train_valid_dataset(
-        data_dir, valid_ratio, shuffle, random_seed, augment, cutout_length
+        data_dir, valid_ratio, shuffle, augment, cutout_length
     )
     test_dataset = get_test_dataset(data_dir)
 
     return train_dataset, valid_dataset, test_dataset
 
 
-def get_train_valid_dataset(data_dir, valid_ratio, 
-                            shuffle, random_seed, 
+def get_train_valid_dataset(data_dir, valid_ratio, shuffle, 
                             augment, cutout_length):
     assert ((valid_ratio >= 0) and (valid_ratio <= 1)), \
         'Assert Error: valid_size should be in the range [0, 1].'
