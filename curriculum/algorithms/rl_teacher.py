@@ -40,7 +40,7 @@ class RLTeacher_1(BaseCL):
     def __init__(self, ):
         super(RLTeacher_1, self).__init__()
 
-        self.name = 'rlteacher_1'
+        self.name = 'rlteacher_online'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         self.catnum = 10
@@ -100,7 +100,7 @@ class RLTeacher_2(BaseCL):
     def __init__(self, ):
         super(RLTeacher_2, self).__init__()
 
-        self.name = 'rlteacher_2'
+        self.name = 'rlteacher_naive'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         self.catnum = 10
@@ -168,7 +168,7 @@ class RLTeacher_3(BaseCL):
     def __init__(self, ):
         super(RLTeacher_3, self).__init__()
 
-        self.name = 'rlteacher_3'
+        self.name = 'rlteacher_window'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         # self.partnum = 10
@@ -235,7 +235,7 @@ class RLTeacher_4(BaseCL):
     def __init__(self, ):
         super(RLTeacher_4, self).__init__()
 
-        self.name = 'rlteacher_4'
+        self.name = 'rlteacher_sampling'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         self.partnum = 10

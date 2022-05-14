@@ -4,29 +4,12 @@ from torch.autograd import Variable
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
+from torch.utils.data import Subset, DataLoader
 from torch.optim.sgd import SGD
 
-class VNet(nn.Module):
-    def __init__(self, input, hidden):
-        super(VNet, self).__init__()
-        self.linear1 = nn.Linear(input, hidden)
+from .utils import VNet_, set_parameter
 
-    def forward(self, x):
-        x = self.linear1(x)
-        return torch.sigmoid(x)
 
-def set_parameter(current_module, name, parameters):
-        if '.' in name:
-            name_split = name.split('.')
-            module_name = name_split[0]
-            rest_name = '.'.join(name_split[1:])
-            for children_name, children in current_module.named_children():
-                if module_name == children_name:
-                    set_parameter(children, rest_name, parameters)
-                    break
-        else:
-            current_module._parameters[name] = parameters
 
 class ScreenerNet(BaseCL):
     def __init__(self, ):
@@ -38,12 +21,11 @@ class ScreenerNet(BaseCL):
         self.lr = 1e-3       
         
     def data_prepare(self, loader):
-        self.dataset = loader.dataset
-        self.data_size = len(self.dataset)
-        self.batch_size = loader.batch_size
-        self.n_batches = (self.data_size - 1) // self.batch_size + 1
-        self.trainData = loader
+        super().data_prepare(loader)
+
+        self.trainData = DataLoader(self.dataset, self.batch_size, shuffle=True)
         self.iter = iter(self.trainData)
+        self.weights = torch.zeros(self.data_size)
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.model = net.to(device)
@@ -53,7 +35,7 @@ class ScreenerNet(BaseCL):
         self.lr_scheduler = lr_scheduler
         
         self.vnet_ = copy.deepcopy(self.model)
-        self.linear = VNet(self.catnum, 1).to(self.device)
+        self.linear = VNet_(self.catnum, 1).to(self.device)
         self.optimizer1 = SGD(self.vnet_.parameters(), lr=self.lr, weight_decay=0.01)
         self.optimizer2 = SGD(self.linear.parameters(), lr=self.lr, weight_decay=0.01)
 
@@ -67,7 +49,7 @@ class ScreenerNet(BaseCL):
             self.trainData = DataLoader(self.trainData.dataset, self.batch_size, shuffle=True)
             self.iter = iter(self.trainData)
             temp = next(self.iter)
-        image, labels = temp
+        image, labels, indices = temp
         image = image.to(self.device)
         labels = labels.to(self.device)
         l = self.criterion(self.model(image), labels)
@@ -86,8 +68,14 @@ class ScreenerNet(BaseCL):
         else:
             w = w_tilde
         w = w * self.batch_size
+        self.weights[indices] = w
+        return [[image, labels, indices]]
 
-        return [[image, labels, w]]
+
+    def loss_curriculum(self, criterion, outputs, labels, indices):
+        return torch.mean(criterion(outputs, labels) * self.weights[indices])
+
+
 
 class ScreenerNetTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):

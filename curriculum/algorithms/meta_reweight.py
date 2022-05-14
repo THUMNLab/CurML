@@ -1,6 +1,6 @@
 from .base import BaseTrainer, BaseCL
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Subset, DataLoader
 import numpy as np
 import torch.nn as nn
 from torch.optim.sgd import SGD
@@ -23,18 +23,19 @@ class MetaReweight(BaseCL):
         np.random.shuffle(temp)
         valid_index = temp[:sample_size]
         train_index = temp[sample_size:]
-        self.validationData = DataLoader(torch.utils.data.Subset(self.dataset, valid_index), self.batch_size, shuffle = False)
-        self.trainData = DataLoader(torch.utils.data.Subset(self.dataset, train_index), self.batch_size, shuffle = True)
+        self.validationData = DataLoader(Subset(self.dataset, valid_index), self.batch_size, shuffle = False)
+        self.trainData = DataLoader(Subset(self.dataset, train_index), self.batch_size, shuffle = True)
         self.iter = iter(self.trainData)
         self.iter2 = iter(self.validationData)
 
+        self.weights = torch.zeros(self.data_size)
+
+
     def data_prepare(self, loader):
-        self.dataset = loader.dataset
-        self.data_size = len(self.dataset)
-        self.batch_size = loader.batch_size
-        self.n_batches = (self.data_size - 1) // self.batch_size + 1
-        
+        super().data_prepare(loader)
+
         self.randomSplit()
+
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         # super().model_prepare(net, device, epochs, criterion, optimizer, lr_scheduler)
@@ -62,7 +63,7 @@ class MetaReweight(BaseCL):
             self.iter2 = iter(self.validationData)
             temp2 = next(self.iter2)
 
-        image, labels = temp
+        image, labels, indices = temp
         image = image.to(self.device)
         labels = labels.to(self.device)
         pseudonet = copy.deepcopy(self.model)
@@ -97,7 +98,12 @@ class MetaReweight(BaseCL):
         else:
             w = w_tilde
         w = w * self.batch_size
-        return [[image, labels, w]]     
+        self.weights[indices] = w
+        return [[image, labels, indices]]
+
+
+    def loss_curriculum(self, criterion, outputs, labels, indices):
+        return torch.mean(criterion(outputs, labels) * self.weights[indices])
 
 
 

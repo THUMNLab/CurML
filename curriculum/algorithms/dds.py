@@ -4,7 +4,7 @@ import copy
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
+from torch.utils.data import Subset, DataLoader
 from torch.optim.sgd import SGD
 import numpy as np
 
@@ -21,6 +21,7 @@ class DDS(BaseCL):
         self.epsilon = epsilon
         self.lr = lr   
 
+
     def randomSplit(self):
         """split data into train and validation data by proportion 9:1"""
         sample_size = self.data_size//10
@@ -28,18 +29,19 @@ class DDS(BaseCL):
         np.random.shuffle(temp)
         valid_index = temp[:sample_size]
         train_index = temp[sample_size:]
-        self.validationData = DataLoader(torch.utils.data.Subset(self.dataset, valid_index), self.batch_size, shuffle = False)
-        self.trainData = DataLoader(torch.utils.data.Subset(self.dataset, train_index), self.batch_size, shuffle = True)
+        self.validationData = DataLoader(Subset(self.dataset, valid_index), self.batch_size, shuffle = False)
+        self.trainData = DataLoader(Subset(self.dataset, train_index), self.batch_size, shuffle = True)
         self.iter1 = iter(self.trainData)
         self.iter2 = iter(self.validationData)
+
+        self.weights = torch.zeros(self.data_size)
        
+
     def data_prepare(self, loader):
-        self.dataset = loader.dataset
-        self.data_size = len(self.dataset)
-        self.batch_size = loader.batch_size
-        self.n_batches = (self.data_size - 1) // self.batch_size + 1
+        super().data_prepare(loader)
         
         self.randomSplit()
+
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         # super().model_prepare(net, device, epochs, criterion, optimizer, lr_scheduler)
@@ -53,6 +55,7 @@ class DDS(BaseCL):
         self.vnet_ = copy.deepcopy(self.model)
         self.linear = VNet_(self.catnum, 1).to(self.device)
         self.image, self.label = next(self.iter1)
+
 
     def data_curriculum(self, loader):
         self.model.train()
@@ -120,7 +123,7 @@ class DDS(BaseCL):
             self.trainData = DataLoader(self.trainData.dataset, self.batch_size, shuffle=True)
             self.iter1 = iter(self.trainData)
             temp = next(self.iter1)
-        a, b = temp
+        a, b, i = temp
         self.image = copy.deepcopy(a)
         self.label = copy.deepcopy(b)
 
@@ -145,7 +148,14 @@ class DDS(BaseCL):
         w_.detach_()
 #        del a
 #        del b
-        return [[a, b, w_]] 
+        self.weights[i] = w
+        return [[a, b, i]]
+
+
+    def loss_curriculum(self, criterion, outputs, labels, indices):
+        return torch.mean(criterion(outputs, labels) * self.weights[indices])
+
+
 
 class DDSTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, 
