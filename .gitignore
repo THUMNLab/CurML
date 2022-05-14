@@ -7,3 +7,4 @@ curriculum.egg-info
 
 *.log
 *.txt
+run.sh

@@ -23,7 +23,8 @@ class ImageClassifier():
 
         self._init_dataloader(data_name)
         self._init_model(net_name, device_name, num_epochs)
-        self._init_logger(algorithm_name, data_name, net_name, random_seed)
+        self._init_logger(algorithm_name, data_name, 
+                          net_name, num_epochs, random_seed)
 
 
     def _init_dataloader(self, data_name):
@@ -70,14 +71,11 @@ class ImageClassifier():
 
     
     def _init_logger(self, algorithm_name, data_name, 
-                     net_name, random_seed):
+                     net_name, num_epochs, random_seed):
         self.log_interval = 1
 
-        # log_info = '%s-%s-%s-%d' % (
-        #     algorithm_name, data_name, net_name, random_seed,
-        # )
-        log_info = '%s-%s-%s-%d-%s' % (
-            algorithm_name, data_name, net_name, random_seed,
+        log_info = '%s-%s-%s-%d-%d-%s' % (
+            algorithm_name, data_name, net_name, num_epochs, random_seed,
             time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
         )
         self.log_dir = os.path.join('./runs', log_info)
@@ -106,9 +104,6 @@ class ImageClassifier():
                 inputs = data[0].to(self.device)
                 labels = data[1].to(self.device)
                 indices = data[2].to(self.device)
-                print(labels)
-                print(indices)
-                input()
 
                 self.optimizer.zero_grad()
                 outputs = net(inputs)
