@@ -28,11 +28,12 @@ class ScreenerNet(BaseCL):
         self.weights = torch.zeros(self.data_size)
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
-        self.model = net.to(device)
         self.device = device
         self.criterion = criterion
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
+        self.model = net.to(device)
+        self.weights = self.weights.to(self.device)
         
         self.vnet_ = copy.deepcopy(self.model)
         self.linear = VNet_(self.catnum, 1).to(self.device)
@@ -52,6 +53,7 @@ class ScreenerNet(BaseCL):
         image, labels, indices = temp
         image = image.to(self.device)
         labels = labels.to(self.device)
+        indices = indices.to(self.device)
         l = self.criterion(self.model(image), labels)
         w = self.linear(self.vnet_(image))
         L = Variable(torch.zeros(1), requires_grad=True).to(self.device)

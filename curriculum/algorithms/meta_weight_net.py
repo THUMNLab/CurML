@@ -41,12 +41,13 @@ class MetaWeightNet(BaseCL):
 
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
-        self.model = net.to(device)
         self.device = device
         self.criterion = criterion
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
         self.vnet = VNet(1, 100, 1).to(self.device)
+        self.model = net.to(device)
+        self.weights = self.weights.to(self.device)
 
 
     def data_curriculum(self, loader):    
@@ -66,6 +67,7 @@ class MetaWeightNet(BaseCL):
         image, labels, indices = temp
         image = image.to(self.device)
         labels = labels.to(self.device)
+        indices = indices.to(self.device)
         pseudonet = copy.deepcopy(self.model)
         out = pseudonet(image)
         loss = self.criterion(out, labels)
@@ -88,7 +90,7 @@ class MetaWeightNet(BaseCL):
 
 
         totalloss2 = 0
-        image2, label2 = temp2
+        image2, label2, indices2 = temp2
 
         image2 = image2.to(self.device)
         label2 = label2.to(self.device)
