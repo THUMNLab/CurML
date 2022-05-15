@@ -106,14 +106,14 @@ class CoarseToFine(BaseCL):
         classify_labels[0] = [index for index in range(tot)]
         self.fa = np.arange(tot)
         epoch_cnt = 0
-
         while (tot > self.cluster_K):
             minimum_path = np.ones(tot)
             target = np.zeros(tot)
             for index_x in range(self.num_classes):
                 label_x = classify_labels[epoch_cnt][index_x]
                 for index_y in range(self.num_classes):
-                    if index_x == index_y:
+                    label_y = classify_labels[epoch_cnt][index_y]
+                    if label_x == label_y:
                         continue
                     if self.confusion_matrix[index_x][index_y] <= minimum_path[label_x]:
                         minimum_path[label_x] = self.confusion_matrix[index_x][index_y]
@@ -132,7 +132,6 @@ class CoarseToFine(BaseCL):
                     classify_labels[epoch_cnt + 1][self.fa[index]] = cnt
                     cnt += 1
                 classify_labels[epoch_cnt + 1][index] = classify_labels[epoch_cnt + 1][self.fa[index]]
-
             tot = cnt
             epoch_cnt += 1
             self.num_cluster = np.append(self.num_cluster, tot)
