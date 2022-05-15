@@ -55,7 +55,7 @@ class DDS(BaseCL):
         self.last_net = copy.deepcopy(self.model)
         self.vnet_ = copy.deepcopy(self.model)
         self.linear = VNet_(self.catnum, 1).to(self.device)
-        self.image, self.label = next(self.iter1)
+        self.image, self.label, self.indices = next(self.iter1)
 
 
     def data_curriculum(self, loader):
@@ -69,7 +69,7 @@ class DDS(BaseCL):
             self.iter2 = iter(self.validationData)
             temp2 = next(self.iter2)
 
-        image, labels = self.image, self.label
+        image, labels, indices = self.image, self.label, self.indices
         image = image.to(self.device)
         labels = labels.to(self.device)
         indices = indices.to(self.device)
@@ -79,7 +79,7 @@ class DDS(BaseCL):
         with torch.no_grad():
             loss = self.criterion(out, labels)
 
-        image2, label2, indices2 = temp2
+        image2, labels2, indices2 = temp2
         image2 = image2.to(self.device)
         labels2 = labels2.to(self.device)
         out2 = self.model(image2)
@@ -149,7 +149,7 @@ class DDS(BaseCL):
         w_.detach_()
 #        del a
 #        del b
-        self.weights[i] = w
+        self.weights[i] = w.view(1, -1)
         return [[a, b, i]]
 
 

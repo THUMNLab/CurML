@@ -70,7 +70,7 @@ class ScreenerNet(BaseCL):
         else:
             w = w_tilde
         w = w * self.batch_size
-        self.weights[indices] = w
+        self.weights[indices] = w.view(1, -1)
         return [[image, labels, indices]]
 
 

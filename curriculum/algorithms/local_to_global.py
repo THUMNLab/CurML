@@ -112,11 +112,10 @@ class LocalToGlobalTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
                  start_size, grow_size, grow_interval, strategy):
         
-        class_size_dict = {'cifar10': 10}
-        cl = LocalToGlobal(
-            class_size_dict[data_name], 
-            start_size, grow_size, grow_interval, strategy
-        )
+        if data_name.startswith('cifar10'):
+            cl = LocalToGlobal(10, start_size, grow_size, grow_interval, strategy)
+        else:
+            raise NotImplementedError()
 
         super(LocalToGlobalTrainer, self).__init__(
             data_name, net_name, device_name, num_epochs, random_seed, cl
