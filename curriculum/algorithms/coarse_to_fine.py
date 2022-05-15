@@ -38,7 +38,7 @@ class CoarseToFine(BaseCL):
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
         try:
-            self.classifier = net.linear
+            self.classifier = net.layer1
         except:
             raise ValueError("net should have a linear classifier")
         self.total_epoch = epochs
