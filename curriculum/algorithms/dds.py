@@ -149,7 +149,7 @@ class DDS(BaseCL):
         w_.detach_()
 #        del a
 #        del b
-        self.weights[i] = w.view(1, -1)
+        self.weights[i] = w.view(1, -1).detach()
         return [[a, b, i]]
 
 
