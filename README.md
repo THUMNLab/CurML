@@ -21,7 +21,7 @@ Actively under development by @THUMNLab
 
 ``` bash
 # 1. clone from the repository
-git clone git@github.com:zhouyw16/CurML.git
+git clone https://github.com/zhouyw16/CurML.git
 cd CurML
 
 # 2. pip install local module: curriculum
