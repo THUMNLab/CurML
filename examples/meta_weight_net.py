@@ -10,7 +10,6 @@ parser.add_argument('--net', type=str, default='resnet')
 parser.add_argument('--device', type=str, default='cuda')
 parser.add_argument('--epochs', type=int, default=100000)
 parser.add_argument('--seed', type=int, default=42)
-parser.add_argument('--type', type=int, default=1)
 args = parser.parse_args()
 
 

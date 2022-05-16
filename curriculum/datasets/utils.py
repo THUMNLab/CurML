@@ -1,5 +1,29 @@
+import random
 import numpy as np
 import torch
+from torch.utils.data import Dataset
+
+
+
+class LabelNoise(Dataset):
+    def __init__(self, dataset, noise_ratio, num_labels):
+        self.dataset = dataset
+        self.noise_ratio = noise_ratio
+        self.num_labels = num_labels
+        self.labels = []
+        for i, (_, y) in enumerate(self.dataset):
+            if random.random() < self.noise_ratio:
+                self.labels.append(
+                    random.choice(list(range(y)) + list(range(y + 1, 10)))
+                )
+            else:
+                self.labels.append(y)
+
+    def __getitem__(self, index):
+        return (self.dataset[index][0], self.labels[index])
+
+    def __len__(self):
+        return len(self.dataset)
 
 
 

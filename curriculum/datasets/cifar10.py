@@ -8,7 +8,7 @@ import numpy as np
 from torch.utils.data import Subset
 from torchvision import datasets, transforms
 
-from .utils import Cutout
+from .utils import Cutout, LabelNoise
 
 
 
@@ -43,14 +43,10 @@ def get_train_valid_dataset(data_dir, valid_ratio, shuffle,
     
     train_transform = transforms.Compose(transf + normalize + cutout)
     valid_transform = transforms.Compose(normalize)
-    noise_transform = transforms.Lambda(
-        lambda y: random.choice(list(range(y)) + list(range(y + 1, 10))) \
-                  if random.random() < noise_ratio else y
-    ) if noise_ratio > 0.0 else transforms.Compose([])
 
     train_dataset = datasets.CIFAR10(
-        root=data_dir, train=True, download=True, 
-        transform=train_transform, target_transform=noise_transform,
+        root=data_dir, train=True, 
+        download=True, transform=train_transform
     )
     valid_dataset = datasets.CIFAR10(
         root=data_dir, train=True,
@@ -66,6 +62,9 @@ def get_train_valid_dataset(data_dir, valid_ratio, shuffle,
     train_idx, valid_idx = indices[split:], indices[:split]
     train_dataset = Subset(train_dataset, train_idx)
     valid_dataset = Subset(valid_dataset, valid_idx)
+
+    if noise_ratio > 0.0:
+        train_dataset = LabelNoise(train_dataset, noise_ratio, 10)
 
     return train_dataset, valid_dataset
 
