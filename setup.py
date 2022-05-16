@@ -4,16 +4,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="curriculum",
+    name="CurML",
     version="0.0.1",
     author="THUMNLab/clteam",
     author_email="zhouyw-21@mails.tsinghua.edu.cn",
-    description="Curriculum Learning Library",
+    description="Curriculum Machine Learning Library",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/zhouyw16/curriculum-learning",
+    url="https://github.com/zhouyw16/CurML",
     project_urls={
-        "Bug Tracker": "https://github.com/zhouyw16/curriculum-learning/issues",
+        "Bug Tracker": "https://github.com/zhouyw16/CurML",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -26,6 +26,5 @@ setuptools.setup(
         'scipy',
         'torch',
         'torchvision',
-        'tqdm',
     ],
 )
