@@ -129,11 +129,6 @@
        clipPathUnits="userSpaceOnUse"><path
          style="clip-rule:evenodd"
          id="path334"
-         d="M 1.3939e-5,0 H 935.40001 V 368.52 H 1.3939e-5 Z" /></clipPath><clipPath
-       id="clipPath348"
-       clipPathUnits="userSpaceOnUse"><path
-         style="clip-rule:evenodd"
-         id="path346"
          d="M 1.3939e-5,0 H 935.40001 V 368.52 H 1.3939e-5 Z" /></clipPath></defs><g
      transform="matrix(1.3333333,0,0,-1.3333333,0,491.36)"
      id="g10"><g
@@ -167,35 +162,35 @@
        d="m 297.54,316.52 c 0,5.42 4.4,9.82 9.82,9.82 H 649.4 c 5.42,0 9.82,-4.4 9.82,-9.82 v -39.28 c 0,-5.42 -4.4,-9.82 -9.82,-9.82 H 307.36 c -5.42,0 -9.82,4.4 -9.82,9.82 z" /><path
        id="path50"
        style="fill:#deebf7;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="m 13.14,268.62 h 113.4 v 70.8 H 13.14 Z" /><path
+       d="m 13.14,268.62 h 119.04 v 70.8 H 13.14 Z" /><path
        id="path52"
        style="fill:none;stroke:#5b9bd5;stroke-width:2.51999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 13.14,268.62 h 113.4 v 70.8 H 13.14 Z" /><g
+       d="m 13.14,268.62 h 119.04 v 70.8 H 13.14 Z" /><g
        id="g54"><g
          clip-path="url(#clipPath60)"
          id="g56"><text
            id="text64"
            style="font-variant:normal;font-weight:normal;font-size:18px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           transform="matrix(1,0,0,-1,45.288,297.31)"><tspan
+           transform="matrix(1,0,0,-1,48.12,297.31)"><tspan
              id="tspan62"
              y="0"
              x="0 14.994 25.002001 34.919998 44.928001">Model</tspan></text>
 </g></g><path
        id="path66"
        style="fill:#ededff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="m 13.14,227.99 c 0,-5.88 25.385,-10.64 56.7,-10.64 31.31,0 56.7,4.76 56.7,10.64 v -63.82 c 0,-5.87 -25.39,-10.63 -56.7,-10.63 -31.315,0 -56.7,4.76 -56.7,10.63 z" /><path
+       d="m 13.14,227.99 c 0,-5.88 26.648,-10.64 59.52,-10.64 32.87,0 59.52,4.76 59.52,10.64 v -63.82 c 0,-5.87 -26.65,-10.63 -59.52,-10.63 -32.872,0 -59.52,4.76 -59.52,10.63 z" /><path
        id="path68"
        style="fill:#f4f4ff;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="m 13.14,227.99 c 0,5.87 25.385,10.63 56.7,10.63 31.31,0 56.7,-4.76 56.7,-10.63 0,-5.88 -25.39,-10.64 -56.7,-10.64 -31.315,0 -56.7,4.76 -56.7,10.64 z" /><path
+       d="m 13.14,227.99 c 0,5.87 26.648,10.63 59.52,10.63 32.87,0 59.52,-4.76 59.52,-10.63 0,-5.88 -26.65,-10.64 -59.52,-10.64 -32.872,0 -59.52,4.76 -59.52,10.64 z" /><path
        id="path70"
        style="fill:none;stroke:#adaddb;stroke-width:2.51999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 126.54,227.99 c 0,-5.88 -25.39,-10.64 -56.7,-10.64 -31.315,0 -56.7,4.76 -56.7,10.64 0,5.87 25.385,10.63 56.7,10.63 31.31,0 56.7,-4.76 56.7,-10.63 z m 0,0 v -63.82 c 0,-5.87 -25.39,-10.63 -56.7,-10.63 -31.315,0 -56.7,4.76 -56.7,10.63 v 63.82" /><g
+       d="m 132.18,227.99 c 0,-5.88 -26.65,-10.64 -59.52,-10.64 -32.872,0 -59.52,4.76 -59.52,10.64 0,5.87 26.648,10.63 59.52,10.63 32.87,0 59.52,-4.76 59.52,-10.63 z m 0,0 v -63.82 c 0,-5.87 -26.65,-10.63 -59.52,-10.63 -32.872,0 -59.52,4.76 -59.52,10.63 v 63.82" /><g
        id="g72"><g
          clip-path="url(#clipPath78)"
          id="g74"><text
            id="text82"
            style="font-variant:normal;font-weight:normal;font-size:18px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           transform="matrix(1,0,0,-1,38.808,184.03)"><tspan
+           transform="matrix(1,0,0,-1,41.64,184.03)"><tspan
              id="tspan80"
              y="0"
              x="0 12.996 22.914 27.917999 37.925999 46.925999 56.880001">Dataset</tspan></text>
@@ -337,11 +332,11 @@
          clip-path="url(#clipPath232)"
          id="g228"><text
            id="text236"
-           style="font-variant:normal;font-weight:normal;font-size:18.02400017px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           style="font-variant:normal;font-weight:normal;font-size:18px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
            transform="matrix(1,0,0,-1,236.23,233.74)"><tspan
              id="tspan234"
              y="0"
-             x="0 9.9672718 19.934544 24.945215 34.96656 44.897785 53.909782 63.859032 69.861023 75.863014 79.864342 88.822273 98.789543 102.79087 112.70407">data_curriculum</tspan></text>
+             x="0 10.008 19.926001 24.93 34.938 44.891998 53.891998 63.900002 69.893997 75.888 79.811996 88.811996 98.82 102.726 112.734">data_curriculum</tspan></text>
 </g></g><path
        id="path238"
        style="fill:#fff2cc;fill-opacity:1;fill-rule:evenodd;stroke:none"
@@ -357,7 +352,7 @@
            transform="matrix(1,0,0,-1,224.33,190.34)"><tspan
              id="tspan250"
              y="0"
-             x="0 14.994 25.002001 35.009998 45.018002 48.942001 58.950001 67.949997 77.958 83.952003 89.945999 93.942001 102.942 112.95 116.856 126.864">model_curriculum</tspan></text>
+             x="0 14.994 25.002001 34.938 44.945999 48.852001 58.860001 67.860001 77.778 83.772003 89.765999 93.762001 102.762 112.698 116.694 126.612">model_curriculum</tspan></text>
 </g></g><path
        id="path254"
        style="fill:#fff2cc;fill-opacity:1;fill-rule:evenodd;stroke:none"
@@ -409,16 +404,16 @@
 </g></g><path
        id="path302"
        style="fill:#f6ecf7;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="m 26.24,123.54 h 100.18 v -66.1 c 0,-7.301 -5.92,-13.22 -13.22,-13.22 H 13.02 v 66.1 c 0,7.3 5.919,13.22 13.22,13.22 z" /><path
+       d="m 26.24,123.54 h 105.82 v -66.1 c 0,-7.301 -5.92,-13.22 -13.22,-13.22 H 13.02 v 66.1 c 0,7.3 5.919,13.22 13.22,13.22 z" /><path
        id="path304"
        style="fill:none;stroke:#f391b7;stroke-width:2.51999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 26.24,123.54 h 100.18 v -66.1 c 0,-7.301 -5.92,-13.22 -13.22,-13.22 H 13.02 v 66.1 c 0,7.3 5.919,13.22 13.22,13.22 z" /><g
+       d="m 26.24,123.54 h 105.82 v -66.1 c 0,-7.301 -5.92,-13.22 -13.22,-13.22 H 13.02 v 66.1 c 0,7.3 5.919,13.22 13.22,13.22 z" /><g
        id="g306"><g
          clip-path="url(#clipPath312)"
          id="g308"><text
            id="text316"
            style="font-variant:normal;font-weight:normal;font-size:18px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           transform="matrix(1,0,0,-1,42.816,98.712)"><tspan
+           transform="matrix(1,0,0,-1,45.648,87.912)"><tspan
              id="tspan314"
              y="0"
              x="0 12.996 21.726 31.733999 41.652">Hyper</tspan></text>
@@ -428,7 +423,7 @@
          id="g320"><text
            id="text328"
            style="font-variant:normal;font-weight:normal;font-size:18px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           transform="matrix(1,0,0,-1,90.456,98.712)"><tspan
+           transform="matrix(1,0,0,-1,93.288,87.912)"><tspan
              id="tspan326"
              y="0"
              x="0">-</tspan></text>
@@ -438,18 +433,8 @@
          id="g332"><text
            id="text340"
            style="font-variant:normal;font-weight:normal;font-size:18px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           transform="matrix(1,0,0,-1,27.696,77.112)"><tspan
+           transform="matrix(1,0,0,-1,25.968,66.312)"><tspan
              id="tspan338"
              y="0"
-             x="0 12.006 21.959999 27.954 37.962002 52.956001 62.874001 67.877998 77.886002">Parameter</tspan></text>
-</g></g><g
-       id="g342"><g
-         clip-path="url(#clipPath348)"
-         id="g344"><text
-           id="text352"
-           style="font-variant:normal;font-weight:normal;font-size:18px;font-family:ArialMT;-inkscape-font-specification:ArialMT;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           transform="matrix(1,0,0,-1,65.136,55.512)"><tspan
-             id="tspan350"
-             y="0"
-             x="0">s</tspan></text>
+             x="0 12.006 21.959999 27.954 37.962002 52.956001 62.874001 67.877998 77.886002 83.879997">Parameters</tspan></text>
 </g></g></g></svg>
