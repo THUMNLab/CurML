@@ -1,7 +1,7 @@
 .vscode
 __pycache__
-curriculum.egg-info
 
+/*.egg-info
 /data
 /runs
 

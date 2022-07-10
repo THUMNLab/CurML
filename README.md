@@ -4,6 +4,8 @@ A library & toolkit for Curriculum Learning.
 
 Actively under development by @THUMNLab
 
+<img src="./docs/img/flow.svg">
+
 ## Target
 
 1. To reproduce, evaluate and compare existing Curriculum Learning algorithms
