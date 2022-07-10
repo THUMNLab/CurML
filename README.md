@@ -40,3 +40,6 @@ pip install -e .
 # 3. run the example code
 python examples/base.py
 ```
+
+## License
+We follow [Apache license](LICENSE) across the entire codebase from v0.2.
