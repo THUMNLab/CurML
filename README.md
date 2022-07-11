@@ -24,9 +24,9 @@ An general workflow of curriculum machine learning is illustrated below.
 
 ## Environment
 
-1. python > 3.6
+1. python >= 3.6
 
-2. pytorch > 1.9.0
+2. pytorch >= 1.9.0
 
 ## Quick Start
 
