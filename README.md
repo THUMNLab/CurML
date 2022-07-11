@@ -56,9 +56,15 @@ Please cite our paper as follows if you find our code useful:
 To be supplemented later.
 ```
 
-You may also find our [survey paper]() helpful:
+You may also find our [survey paper](https://arxiv.org/pdf/2010.13166.pdf) helpful:
 ```
-
+@article{wang2021survey,
+  title={A survey on curriculum learning},
+  author={Wang, Xin and Chen, Yudong and Zhu, Wenwu},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2021},
+  publisher={IEEE}
+}
 ```
 
 
