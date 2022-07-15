@@ -11,9 +11,9 @@ setuptools.setup(
     description="Curriculum Machine Learning Library",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/zhouyw16/CurML",
+    url="https://github.com/THUMNLab/CurML",
     project_urls={
-        "Bug Tracker": "https://github.com/zhouyw16/CurML",
+        "Bug Tracker": "https://github.com/THUMNLab/CurML",
     },
     classifiers=[
         "Programming Language :: Python :: 3",

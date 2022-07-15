@@ -32,7 +32,7 @@ An general workflow of curriculum machine learning is illustrated below.
 
 ``` bash
 # 1. clone from the repository
-git clone https://github.com/zhouyw16/CurML.git
+git clone https://github.com/THUMNLab/CurML
 cd CurML
 
 # 2. pip install local module: curriculum
