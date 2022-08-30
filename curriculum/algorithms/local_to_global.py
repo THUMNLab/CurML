@@ -8,6 +8,10 @@ from .base import BaseTrainer, BaseCL
 
 
 class LocalToGlobal(BaseCL):
+    """
+    
+    Local to global learning: Gradually adding classes for training deep neural networks. http://openaccess.thecvf.com/content_CVPR_2019/papers/Cheng_Local_to_Global_Learning_Gradually_Adding_Classes_for_Training_Deep_CVPR_2019_paper.pdf
+    """
     def __init__(self, class_size, start_size, 
                  grow_size, grow_interval, strategy):
         super(LocalToGlobal, self).__init__()

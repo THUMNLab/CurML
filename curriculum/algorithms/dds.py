@@ -13,6 +13,10 @@ from .utils import VNet_, set_parameter
 
 
 class DDS(BaseCL):
+    """
+    
+    Optimizing data usage via differentiable rewards. http://proceedings.mlr.press/v119/wang20p/wang20p.pdf
+    """
     def __init__(self, catnum, epsilon, lr):
         super(DDS, self).__init__()
 

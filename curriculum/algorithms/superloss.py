@@ -7,6 +7,10 @@ from .base import BaseTrainer, BaseCL
 
 
 class Superloss(BaseCL):
+    """
+    
+    Superloss: A generic loss for robust curriculum learning. https://proceedings.neurips.cc/paper/2020/file/2cfa8f9e50e0f510ede9d12338a5f564-Paper.pdf
+    """
     def __init__(self, tau, lam, fac):
         super(Superloss, self).__init__()
 

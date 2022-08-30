@@ -8,6 +8,10 @@ from .base import BaseTrainer, BaseCL
 
 
 class CoarseToFine(BaseCL):
+    """
+    
+    Coarse-to-Fine Curriculum Learning. https://arxiv.org/pdf/2106.04072
+    """
     def __init__(self, cluster_K, num_classes, pretrained_net):
         super(CoarseToFine, self).__init__()
 
