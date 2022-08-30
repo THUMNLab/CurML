@@ -46,8 +46,7 @@ class ImageClassifier():
 
 
     def _init_model(self, data_name, net_name, device_name, num_epochs):
-        classes_dict = {'cifar10': 10, 'cifar100': 100}
-        self.net = get_net(net_name, classes_dict[data_name])
+        self.net = get_net(net_name, data_name)
         self.device = torch.device(device_name \
             if torch.cuda.is_available() else 'cpu')
         self.net.to(self.device)
