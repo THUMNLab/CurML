@@ -48,5 +48,4 @@ class SuperlossTrainer(BaseTrainer):
         cl = Superloss(tau, lam, fac)
         
         super(SuperlossTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

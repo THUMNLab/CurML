@@ -20,7 +20,7 @@ class Minimax(BaseCL):
                  fe_central_sum, num_classes):
         super(Minimax, self).__init__()
 
-        self.name = 'Minimax CL'
+        self.name = 'minimax'
 
         self.epoch = 0
         self.schedule_epoch = schedule_epoch
@@ -277,5 +277,4 @@ class MinimaxTrainer(BaseTrainer):
                  num_classes)
 
         super(MinimaxTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

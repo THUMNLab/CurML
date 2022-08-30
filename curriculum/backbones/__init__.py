@@ -23,7 +23,7 @@ from .dla import *
 
 
 
-def get_net(net_name):
+def get_net(net_name, num_classes):
     net_dict = {
         'convnet': ConvNet,
         'vgg': VGG19,
@@ -45,4 +45,4 @@ def get_net(net_name):
     assert net_name in net_dict, \
         'Assert Error: net_name should be in ' + str(list(net_dict.keys()))
     
-    return net_dict[net_name]()
+    return net_dict[net_name](num_classes=num_classes)

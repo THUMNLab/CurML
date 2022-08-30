@@ -21,7 +21,7 @@ class BabyStep(BaseCL):
     def __init__(self, start_rate, grow_rate, grow_interval):
         super(BabyStep, self).__init__()
 
-        self.name = 'Baby Step'
+        self.name = 'baby_step'
         self.epoch = 0
 
         self.start_rate = start_rate

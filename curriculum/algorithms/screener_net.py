@@ -19,7 +19,7 @@ class ScreenerNet(BaseCL):
     def __init__(self, ):
         super(ScreenerNet, self).__init__()
 
-        self.name = 'ScreenerNet'
+        self.name = 'screener_net'
 
         self.catnum = 10
         self.lr = 1e-3       

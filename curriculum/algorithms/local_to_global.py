@@ -16,7 +16,7 @@ class LocalToGlobal(BaseCL):
                  grow_size, grow_interval, strategy):
         super(LocalToGlobal, self).__init__()
 
-        self.name = 'localtoglobal'
+        self.name = 'local_to_global'
         self.epoch = 0
         self.classes = np.array([], dtype=int)
 
@@ -122,5 +122,4 @@ class LocalToGlobalTrainer(BaseTrainer):
             raise NotImplementedError()
 
         super(LocalToGlobalTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

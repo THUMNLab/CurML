@@ -26,7 +26,7 @@ class SelfPaced(BaseCL):
                  grow_fn, weight_fn):
         super(SelfPaced, self).__init__()
 
-        self.name = 'Self-Paced'
+        self.name = 'self_paced'
         self.epoch = 0
 
         self.start_rate = start_rate

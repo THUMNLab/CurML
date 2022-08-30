@@ -20,7 +20,7 @@ class LambdaStep(BaseCL):
     def __init__(self, start_rate, grow_epochs, grow_fn):
         super(LambdaStep, self).__init__()
 
-        self.name = 'Lambda Step'
+        self.name = 'lambda_step'
         self.epoch = 0
         
         self.start_rate = start_rate

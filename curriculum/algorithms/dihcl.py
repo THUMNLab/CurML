@@ -156,5 +156,4 @@ class DIHCLTrainer(BaseTrainer):
                  type, sample_type, cei)
 
         super(DIHCLTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

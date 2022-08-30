@@ -20,7 +20,7 @@ class TransferTeacher(SelfPaced):
         super(TransferTeacher, self).__init__(
             start_rate, grow_epochs, grow_fn, weight_fn)
 
-        self.name = 'Transfer Teacher'
+        self.name = 'transfer_teacher'
         self.net = teacher_net
         self.data_loss = None
 

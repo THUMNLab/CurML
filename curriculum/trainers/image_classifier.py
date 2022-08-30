@@ -22,9 +22,8 @@ class ImageClassifier():
         self.loss_curriculum = loss_curriculum
 
         self._init_dataloader(data_name)
-        self._init_model(net_name, device_name, num_epochs)
-        self._init_logger(algorithm_name, data_name, 
-                          net_name, num_epochs, random_seed)
+        self._init_model(data_name, net_name, device_name, num_epochs)
+        self._init_logger(algorithm_name, data_name, net_name, num_epochs, random_seed)
 
 
     def _init_dataloader(self, data_name):
@@ -35,22 +34,20 @@ class ImageClassifier():
 
         self.train_loader = torch.utils.data.DataLoader(
             train_dataset, batch_size=100, shuffle=True,
-            num_workers=2, pin_memory=True,
-        )
+            num_workers=2, pin_memory=True)
         self.valid_loader = torch.utils.data.DataLoader(
             valid_dataset, batch_size=100, shuffle=False,
-            num_workers=2, pin_memory=True,
-        )
+            num_workers=2, pin_memory=True)
         self.test_loader = torch.utils.data.DataLoader(
             test_dataset, batch_size=100, shuffle=False,
-            num_workers=2, pin_memory=True,
-        )
+            num_workers=2, pin_memory=True)
 
         self.data_prepare(self.train_loader)
 
 
-    def _init_model(self, net_name, device_name, num_epochs):
-        self.net = get_net(net_name)
+    def _init_model(self, data_name, net_name, device_name, num_epochs):
+        classes_dict = {'cifar10': 10, 'cifar100': 100}
+        self.net = get_net(net_name, classes_dict[data_name])
         self.device = torch.device(device_name \
             if torch.cuda.is_available() else 'cpu')
         self.net.to(self.device)
@@ -58,16 +55,13 @@ class ImageClassifier():
         self.epochs = num_epochs
         self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
         self.optimizer = torch.optim.SGD(
-            self.net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4
-        )
+            self.net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
         self.lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            self.optimizer, T_max=self.epochs, eta_min=1e-6
-        )
+            self.optimizer, T_max=self.epochs, eta_min=1e-6)
 
         self.model_prepare(
             self.net, self.device, self.epochs, 
-            self.criterion, self.optimizer, self.lr_scheduler
-        )
+            self.criterion, self.optimizer, self.lr_scheduler)
 
     
     def _init_logger(self, algorithm_name, data_name, 

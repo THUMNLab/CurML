@@ -20,7 +20,7 @@ class MetaWeightNet(BaseCL):
     def __init__(self, ):
         super(MetaWeightNet, self).__init__()
 
-        self.name = 'metaweightnet'
+        self.name = 'meta_weight_net'
 
 
     def randomSplit(self):

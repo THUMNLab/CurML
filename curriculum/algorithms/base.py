@@ -36,7 +36,7 @@ class BaseCL():
 
 
     def __init__(self):
-        self.name = 'No Curriculum'
+        self.name = 'base'
 
 
     def data_prepare(self, loader):

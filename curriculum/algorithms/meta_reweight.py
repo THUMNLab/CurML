@@ -17,7 +17,7 @@ class MetaReweight(BaseCL):
     """
     def __init__(self, ):
         super(MetaReweight, self).__init__()
-        self.name = 'Meta Reweight'
+        self.name = 'meta_reweight'
     
 
     def randomSplit(self):

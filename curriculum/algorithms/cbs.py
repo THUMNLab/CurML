@@ -55,5 +55,4 @@ class CBSTrainer(BaseTrainer):
         cl = CBS(kernel_size, start_std, grow_factor, grow_interval)
 
         super(CBSTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

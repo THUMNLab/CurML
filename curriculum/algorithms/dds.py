@@ -170,5 +170,4 @@ class DDSTrainer(BaseTrainer):
         cl = DDS(catnum, epsilon, lr)
 
         super(DDSTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

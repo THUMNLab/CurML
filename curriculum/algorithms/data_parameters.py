@@ -14,7 +14,7 @@ class DataParameters(BaseCL):
     def __init__(self, class_size):
         super(DataParameters, self).__init__()
 
-        self.name = 'dataparameters'
+        self.name = 'data_parameters'
 
         self.class_size = class_size
 
@@ -65,10 +65,11 @@ class DataParameters(BaseCL):
 class DataParametersTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed):
         
-        if data_name.startswith('cifar10'):
-            cl = DataParameters(10)
-        else:
-            raise NotImplementedError()
+        classes_dict = {
+            'cifar10': 10,
+            'cifar100': 100,
+        }
+        cl = DataParameters(classes_dict[data_name])
         
         super(DataParametersTrainer, self).__init__(
             data_name, net_name, device_name, num_epochs, random_seed, cl)
