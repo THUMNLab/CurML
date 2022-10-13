@@ -53,9 +53,24 @@ For extension, more latest CL algorithms will be added, or you can add your own 
 
 ## Cite
 
-Please cite our paper as follows if you find our code useful:
+Please cite our [paper](https://dl.acm.org/doi/pdf/10.1145/3503161.3548549) as follows if you find our code useful:
 ```
-To be supplemented later.
+@inproceedings{10.1145/3503161.3548549,
+author = {Zhou, Yuwei and Chen, Hong and Pan, Zirui and Yan, Chuanhao and Lin, Fanqi and Wang, Xin and Zhu, Wenwu},
+title = {CurML: A Curriculum Machine Learning Library},
+year = {2022},
+isbn = {9781450392037},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3503161.3548549},
+doi = {10.1145/3503161.3548549},
+booktitle = {Proceedings of the 30th ACM International Conference on Multimedia},
+pages = {7359–7363},
+numpages = {5},
+keywords = {machine learning, curriculum learning, training strategy},
+location = {Lisboa, Portugal},
+series = {MM '22}
+}
 ```
 
 You may also find our [survey paper](https://arxiv.org/pdf/2010.13166.pdf) helpful:
