@@ -43,7 +43,7 @@ class SelfPaced(BaseCL):
         data_threshold = data_loss[data_indices[-1]]
 
         if self.weight_fn == 'hard':
-            dataset = Subset(self.dataset, tuple(range(data_size)))
+            dataset = Subset(self.dataset, data_indices)
         else:
             self.weights = self._data_weight(data_loss, data_threshold)
             dataset = self.dataset
