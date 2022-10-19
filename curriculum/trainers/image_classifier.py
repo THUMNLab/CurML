@@ -60,8 +60,6 @@ class ImageClassifier():
     
     def _init_logger(self, algorithm_name, data_name, 
                      net_name, num_epochs, random_seed):
-        self.log_interval = 1
-
         log_info = '%s-%s-%s-%d-%d-%s' % (
             algorithm_name, data_name, net_name, num_epochs, random_seed,
             time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime()))
@@ -69,10 +67,10 @@ class ImageClassifier():
         if not os.path.exists('./runs'): os.mkdir('./runs')
         if not os.path.exists(self.log_dir): os.mkdir(self.log_dir)
         else: print('The directory %s has already existed.' % (self.log_dir))
-        
-        log_file = os.path.join(self.log_dir, 'train.log')
-        self.logger = get_logger(log_file, log_info)
 
+        self.log_interval = 1
+        self.logger = get_logger(os.path.join(self.log_dir, 'train.log'), log_info)
+        
 
     def _train(self):
         best_acc = 0.0
@@ -118,7 +116,6 @@ class ImageClassifier():
                     '[%3d]  Valid data = %6d  Valid Acc = %.4f' 
                     % (epoch + 1, len(self.valid_loader.dataset), valid_acc))
             
-
 
     def _valid(self, loader):
         total = 0

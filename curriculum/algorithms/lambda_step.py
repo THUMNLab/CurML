@@ -70,7 +70,7 @@ class LambdaStep(BaseCL):
 
 class LambdaStepTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed, 
-                 start_rate, grow_epochs, grow_fn, not_sorted):
+                 start_rate, grow_epochs, grow_fn, not_sorted=False):
         
         cl = LambdaStep(start_rate, grow_epochs, grow_fn, not_sorted)
         
