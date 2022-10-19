@@ -37,7 +37,7 @@ class BabyStep(BaseCL):
         super().data_prepare(loader)
 
         self.data_indices = list(range(self.data_size))         # Assume the data is sorted by difficulty.
-        if self.not_sorted:                                     
+        if self.not_sorted:
             random.shuffle(self.data_indices)                   # Else shuffle data to simulate data sorting by difficulty.
 
 
