@@ -24,21 +24,14 @@ class DataParameters(BaseCL):
         self.device = device
 
         self.data_weights = torch.tensor(
-            np.ones(self.data_size) * np.log(1.0),
-            dtype=torch.float32, requires_grad=True, device=self.device
-        )
-        self.data_optimizer = SparseSGD([self.data_weights], 
-            lr=0.1, momentum=0.9, skip_update_zero_grad=True
-        )
+            np.ones(self.data_size) * np.log(1.0), dtype=torch.float32, requires_grad=True, device=self.device)
+        self.data_optimizer = SparseSGD(
+            [self.data_weights], lr=0.1, momentum=0.9, skip_update_zero_grad=True)
         self.data_optimizer.zero_grad()
 
         self.class_weights = torch.tensor(
-            np.ones(self.class_size) * np.log(1.0),
-            dtype=torch.float32, requires_grad=True, device=self.device
-        )
-        self.class_optimizer = SparseSGD([self.class_weights], 
-            lr=0.1, momentum=0.9, skip_update_zero_grad=True
-        )
+            np.ones(self.class_size) * np.log(1.0), dtype=torch.float32, requires_grad=True, device=self.device)
+        self.class_optimizer = SparseSGD([self.class_weights], lr=0.1, momentum=0.9, skip_update_zero_grad=True)
         self.class_optimizer.zero_grad()
 
 

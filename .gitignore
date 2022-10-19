@@ -3,7 +3,7 @@ __pycache__
 
 /*.egg-info
 /data
-/runs
+/runs*
 
 *.log
 *.txt

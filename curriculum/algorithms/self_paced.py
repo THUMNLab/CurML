@@ -54,10 +54,10 @@ class SelfPaced(BaseCL):
         data_threshold = data_loss[data_indices[-1]]            # Derive the loss of the hardest data instance among the sampled data.
 
         if self.weight_fn == 'hard':                            # Data Sampling (hard selection).
-            dataset = Subset(self.dataset, tuple(range(data_size)))
+            dataset = Subset(self.dataset, data_indices)
         else:                                                   # Data Reweighting (soft selection).
-            self.weights = self._data_weight(data_loss, data_threshold)
             dataset = self.dataset
+            self.weights = self._data_weight(data_loss, data_threshold)
         return DataLoader(dataset, self.batch_size, shuffle=True)
 
 

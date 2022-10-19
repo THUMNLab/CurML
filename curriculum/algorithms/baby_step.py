@@ -1,3 +1,4 @@
+import random
 from torch.utils.data import Subset, DataLoader
 
 from .base import BaseTrainer, BaseCL
@@ -18,8 +19,9 @@ class BabyStep(BaseCL):
         start_rate: An float for the initial proportion of the sampled data instances.
         grow_rate: An float for the growth proportion of the sampled data instance.
         grow_interval: An integer for the number of training set growth interval.
+        not_sorted: An boolean of whether the data has been sorted by difficulty. Default: False.
     """
-    def __init__(self, start_rate, grow_rate, grow_interval):
+    def __init__(self, start_rate, grow_rate, grow_interval, not_sorted=False):
         super(BabyStep, self).__init__()
 
         self.name = 'baby_step'
@@ -28,6 +30,15 @@ class BabyStep(BaseCL):
         self.start_rate = start_rate
         self.grow_rate = grow_rate
         self.grow_interval = grow_interval
+        self.not_sorted = not_sorted
+
+    
+    def data_prepare(self, loader):
+        super().data_prepare(loader)
+
+        self.data_indices = list(range(self.data_size))         # Assume the data is sorted by difficulty.
+        if self.not_sorted:                                     
+            random.shuffle(self.data_indices)                   # Else shuffle data to simulate data sorting by difficulty.
 
 
     def data_curriculum(self, loader):
@@ -40,8 +51,9 @@ class BabyStep(BaseCL):
 
         data_rate = min(1.0, self._subset_grow())               # Current proportion of sampled data.
         data_size = int(self.data_size * data_rate)             # Current number of sampled data.
+        data_indices = self.data_indices[:data_size]            # Current indices of samples data.
 
-        dataset = Subset(self.dataset, tuple(range(data_size)))
+        dataset = Subset(self.dataset, data_indices)
         return DataLoader(dataset, self.batch_size, shuffle=True)
 
 
@@ -52,9 +64,9 @@ class BabyStep(BaseCL):
 
 class BabyStepTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed, 
-                 start_rate, grow_rate, grow_interval):
+                 start_rate, grow_rate, grow_interval, not_sorted):
         
-        cl = BabyStep(start_rate, grow_rate, grow_interval)
+        cl = BabyStep(start_rate, grow_rate, grow_interval, not_sorted)
         
         super(BabyStepTrainer, self).__init__(
             data_name, net_name, device_name, num_epochs, random_seed, cl)
