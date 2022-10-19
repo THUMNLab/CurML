@@ -12,8 +12,8 @@ class ImageClassifier():
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
                  algorithm_name, data_prepare, model_prepare, data_curriculum, 
                  model_curriculum, loss_curriculum):
-
         self.random_seed = random_seed
+        set_random(self.random_seed)
 
         self.data_prepare = data_prepare
         self.model_prepare = model_prepare
@@ -27,8 +27,6 @@ class ImageClassifier():
 
 
     def _init_dataloader(self, data_name):
-        set_random(self.random_seed)
-
         train_dataset, valid_dataset, test_dataset = \
             get_dataset_with_noise('./data', data_name)
 
