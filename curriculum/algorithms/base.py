@@ -8,7 +8,7 @@ from ..trainers import *
 class BaseCL():
     """The base class of CL Algorithm class.
 
-    Each CL Algorithm class has a CLDataset and five key member functions.
+    Each CL Algorithm class has a CLDataset and five key APIs.
 
     Attributes:
         name: A string for the name of a CL algorithm.
@@ -22,7 +22,7 @@ class BaseCL():
         """A dataset for CL Algorithm.
 
         It attaches the original training dataset with data index,
-        which is commonly used for data sampling or reweighting.
+        which is a common strategy for data sampling or reweighting.
         """
         def __init__(self, dataset):
             self.dataset = dataset
@@ -40,7 +40,7 @@ class BaseCL():
 
 
     def data_prepare(self, loader):
-        """Pass training data to CL Algorithm.
+        """Pass training data information from Model Trainer to CL Algorithm.
         
         Initiate the CLDataset and record training data attributes.
         """
@@ -52,7 +52,7 @@ class BaseCL():
 
     def model_prepare(self, net, device, epochs, 
                       criterion, optimizer, lr_scheduler):
-        """Pass model information to CL Algorithm."""
+        """Pass model information from Model Trainer to CL Algorithm."""
         pass
 
 
@@ -75,7 +75,7 @@ class BaseCL():
 class BaseTrainer():
     """The base class of CL Trainer class.
 
-    It initiates the Model Trainer and CL Algorithm, 
+    It initiates the Model Trainer class and CL Algorithm class, 
     and provide the functions for training and evaluation.
 
     Attributes:
@@ -104,10 +104,10 @@ class BaseTrainer():
 
 
     def evaluate(self, net_dir=None):
-        """Evaluate the net performance given its path, else evaluate the trained net."""
+        """Evaluate the net performance if given its path, else evaluate the trained net."""
         return self.trainer.evaluate(net_dir)
 
     
     def export(self, net_dir=None):
-        """Load the net state dict given its path, else load the trained net."""
+        """Load the net state dict if given its path, else load the trained net."""
         return self.trainer.export(net_dir)
