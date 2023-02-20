@@ -8,11 +8,15 @@ from .base import BaseTrainer, BaseCL
 
 
 class LocalToGlobal(BaseCL):
+    """
+    
+    Local to global learning: Gradually adding classes for training deep neural networks. http://openaccess.thecvf.com/content_CVPR_2019/papers/Cheng_Local_to_Global_Learning_Gradually_Adding_Classes_for_Training_Deep_CVPR_2019_paper.pdf
+    """
     def __init__(self, class_size, start_size, 
                  grow_size, grow_interval, strategy):
         super(LocalToGlobal, self).__init__()
 
-        self.name = 'localtoglobal'
+        self.name = 'local_to_global'
         self.epoch = 0
         self.classes = np.array([], dtype=int)
 
@@ -118,5 +122,4 @@ class LocalToGlobalTrainer(BaseTrainer):
             raise NotImplementedError()
 
         super(LocalToGlobalTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

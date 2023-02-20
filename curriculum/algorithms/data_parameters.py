@@ -11,12 +11,7 @@ class DataParameters(BaseCL):
                  init_data_param, lr_data_param, wd_data_param):
         super(DataParameters, self).__init__()
 
-        self.name = 'dataparameters'
-        self.device = None
-        self.data_weights = None
-        self.data_optimizer = None
-        self.class_weights = None
-        self.class_optimizer = None
+        self.name = 'data_parameters'
 
         self.class_size = class_size
         self.init_class_param = init_class_param
@@ -82,8 +77,7 @@ class DataParametersTrainer(BaseTrainer):
             raise NotImplementedError()
         
         super(DataParametersTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)
 
 
 

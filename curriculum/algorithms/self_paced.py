@@ -7,16 +7,27 @@ from .base import BaseTrainer, BaseCL
 
 
 class SelfPaced(BaseCL):
+    """Self-Paced Learning CL Algorithm. 
+
+    Self-paced learning for latent variable models. https://proceedings.neurips.cc/paper/2010/file/e57c6b956a6521b28495f2886ca0977a-Paper.pdf
+
+    Attributes:
+        name, dataset, data_size, batch_size, n_batches: Base class attributes.
+        epoch: An integer count of current training epoch.
+        start_rate: An float indicating the initial proportion of the sampled data instances.
+        grow_epochs: An integer for the epoch when the proportion of sampled data reaches 1.0.
+        grow_fn: Pacing function or Competence function that how the proportion of sampled data grows.
+        net: The network itself for calculating the loss.
+        device: The used cuda (currently only support single cuda training).
+        criterion: The loss function.
+        weights: The weights of all training data instances.
+    """
     def __init__(self, start_rate, grow_epochs, 
                  grow_fn, weight_fn):
         super(SelfPaced, self).__init__()
 
-        self.name = 'selfpaced'
+        self.name = 'self_paced'
         self.epoch = 0
-        self.net = None
-        self.device = None
-        self.criterion = None
-        self.weights = None
 
         self.start_rate = start_rate
         self.grow_epochs = grow_epochs
@@ -26,8 +37,8 @@ class SelfPaced(BaseCL):
 
     def model_prepare(self, net, device, epochs, 
                       criterion, optimizer, lr_scheduler):
-        if self.net is None:
-            self.net = net
+        if self.net is None:                                    # In Self-Paced Learning, the network is itself.
+            self.net = net                                      # In Transfer Teacher, the network is teacher net.
         self.device = device
         self.criterion = criterion
 
@@ -35,18 +46,25 @@ class SelfPaced(BaseCL):
     def data_curriculum(self, loader):
         self.epoch += 1
 
-        data_rate = min(1.0, self._subset_grow())
-        data_size = int(self.data_size * data_rate)
+        data_rate = min(1.0, self._subset_grow())               # Current proportion of sampled data.
+        data_size = int(self.data_size * data_rate)             # Current number of sampled data.
 
-        data_loss = self._loss_measure()
-        data_indices = torch.argsort(data_loss)[:data_size]
-        data_threshold = data_loss[data_indices[-1]]
+        data_loss = self._loss_measure()                        # Calculate loss as the measurement of difficulty. 
+        data_indices = torch.argsort(data_loss)[:data_size]     # Sort data according to the loss value and sample the easist data.
+        data_threshold = data_loss[data_indices[-1]]            # Derive the loss of the hardest data instance among the sampled data.
 
+<<<<<<< HEAD
         if self.weight_fn == 'hard':
             dataset = Subset(self.dataset, data_indices)
         else:
             self.weights = self._data_weight(data_loss, data_threshold)
+=======
+        if self.weight_fn == 'hard':                            # Data Sampling (hard selection).
+            dataset = Subset(self.dataset, data_indices)
+        else:                                                   # Data Reweighting (soft selection).
+>>>>>>> aaba15c1908d655c82f67812e4a624ee0b70593d
             dataset = self.dataset
+            self.weights = self._data_weight(data_loss, data_threshold)
         return DataLoader(dataset, self.batch_size, shuffle=True)
 
 
@@ -58,25 +76,25 @@ class SelfPaced(BaseCL):
 
 
     def _subset_grow(self):
-        if self.grow_fn == 'linear':
+        if self.grow_fn == 'linear':                            # Linear Function.
             return self.start_rate + (1.0 - self.start_rate) / self.grow_epochs * self.epoch
-        elif self.grow_fn == 'geom':
+        elif self.grow_fn == 'geom':                            # Geometric Function.
             return 2.0 ** ((math.log2(1.0) - math.log2(self.start_rate)) / self.grow_epochs * self.epoch + math.log2(self.start_rate))
         elif self.grow_fn[:5] == 'root-' and self.grow_fn[5:].isnumeric():
-            p = int(self.grow_fn[5:])
+            p = int(self.grow_fn[5:])                           # Root-p Function.
             return (self.start_rate ** p + (1.0 - self.start_rate ** p) / self.grow_epochs * self.epoch) ** 0.5
         else:
             raise NotImplementedError()
 
 
     def _loss_measure(self):
-        return torch.cat([self.criterion(self.net(
-            data[0].to(self.device)), data[1].to(self.device)).detach() 
+        return torch.cat([self.criterion(
+            self.net(data[0].to(self.device)), data[1].to(self.device)).detach() 
             for data in DataLoader(self.dataset, self.batch_size)])
 
 
     def _data_weight(self, loss, threshold):
-        mask = loss < threshold
+        mask = loss < threshold                                 # The weight of data whose loss greater than threshold is zero.
         if self.weight_fn == 'linear':
             return mask * (1.0 - loss / threshold)
         elif self.weight_fn == 'logarithmic':
@@ -97,5 +115,4 @@ class SelfPacedTrainer(BaseTrainer):
         cl = SelfPaced(start_rate, grow_epochs, grow_fn, weight_fn)
 
         super(SelfPacedTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

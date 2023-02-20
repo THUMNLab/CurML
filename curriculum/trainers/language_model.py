@@ -8,12 +8,12 @@ from ..utils import get_logger, set_random
 
 
 
-class ImageClassifier():
+class LanguageModel():
     def __init__(self, data_name, net_name, device_name, num_epochs, random_seed,
                  algorithm_name, data_prepare, model_prepare, data_curriculum, 
                  model_curriculum, loss_curriculum):
+
         self.random_seed = random_seed
-        set_random(self.random_seed)
 
         self.data_prepare = data_prepare
         self.model_prepare = model_prepare
@@ -27,17 +27,22 @@ class ImageClassifier():
 
 
     def _init_dataloader(self, data_name):
-        train_dataset, valid_dataset, test_dataset = \
-            get_dataset_with_noise('./data', data_name)
+        set_random(self.random_seed)
 
-        self.train_loader = torch.utils.data.DataLoader(
-            train_dataset, batch_size=100, shuffle=True, num_workers=2, pin_memory=True)
-        self.valid_loader = torch.utils.data.DataLoader(
-            valid_dataset, batch_size=100, shuffle=False, num_workers=2, pin_memory=True)
-        self.test_loader = torch.utils.data.DataLoader(
-            test_dataset, batch_size=100, shuffle=False, num_workers=2, pin_memory=True)
+        # train_dataset, valid_dataset, test_dataset = \
+        #     get_dataset_with_noise('./data', data_name)
 
-        self.data_prepare(self.train_loader)
+        # self.train_loader = torch.utils.data.DataLoader(
+        #     train_dataset, batch_size=100, shuffle=True,
+        #     num_workers=2, pin_memory=True)
+        # self.valid_loader = torch.utils.data.DataLoader(
+        #     valid_dataset, batch_size=100, shuffle=False,
+        #     num_workers=2, pin_memory=True)
+        # self.test_loader = torch.utils.data.DataLoader(
+        #     test_dataset, batch_size=100, shuffle=False,
+        #     num_workers=2, pin_memory=True)
+
+        # self.data_prepare(self.train_loader)
 
 
     def _init_model(self, data_name, net_name, device_name, num_epochs):
@@ -46,31 +51,34 @@ class ImageClassifier():
             if torch.cuda.is_available() else 'cpu')
         self.net.to(self.device)
 
-        self.epochs = num_epochs
-        self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
-        self.optimizer = torch.optim.SGD(
-            self.net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
-        self.lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            self.optimizer, T_max=self.epochs, eta_min=1e-6)
+        # self.epochs = num_epochs
+        # self.criterion = torch.nn.CrossEntropyLoss(reduction='none')
+        # self.optimizer = torch.optim.SGD(
+        #     self.net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
+        # self.lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        #     self.optimizer, T_max=self.epochs, eta_min=1e-6)
 
-        self.model_prepare(
-            self.net, self.device, self.epochs, 
-            self.criterion, self.optimizer, self.lr_scheduler)
+        # self.model_prepare(
+        #     self.net, self.device, self.epochs, 
+        #     self.criterion, self.optimizer, self.lr_scheduler)
 
     
     def _init_logger(self, algorithm_name, data_name, 
                      net_name, num_epochs, random_seed):
+        self.log_interval = 1
+
         log_info = '%s-%s-%s-%d-%d-%s' % (
             algorithm_name, data_name, net_name, num_epochs, random_seed,
-            time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime()))
+            time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
+        )
         self.log_dir = os.path.join('./runs', log_info)
         if not os.path.exists('./runs'): os.mkdir('./runs')
         if not os.path.exists(self.log_dir): os.mkdir(self.log_dir)
         else: print('The directory %s has already existed.' % (self.log_dir))
-
-        self.log_interval = 1
-        self.logger = get_logger(os.path.join(self.log_dir, 'train.log'), log_info)
         
+        log_file = os.path.join(self.log_dir, 'train.log')
+        self.logger = get_logger(log_file, log_info)
+
 
     def _train(self):
         best_acc = 0.0
@@ -93,7 +101,8 @@ class ImageClassifier():
                 self.optimizer.zero_grad()
                 outputs = net(inputs)
                 loss = self.loss_curriculum(                    # curriculum part
-                    self.criterion, outputs, labels, indices)
+                    self.criterion, outputs, labels, indices
+                )
                 loss.backward()
                 self.optimizer.step()
 
@@ -105,7 +114,8 @@ class ImageClassifier():
             self.lr_scheduler.step()
             self.logger.info(
                 '[%3d]  Train data = %6d  Train Acc = %.4f  Loss = %.4f  Time = %.2f'
-                % (epoch + 1, total, correct / total, train_loss / (step + 1), time.time() - t))
+                % (epoch + 1, total, correct / total, train_loss / (step + 1), time.time() - t)
+            )
 
             if (epoch + 1) % self.log_interval == 0:
                 valid_acc = self._valid(self.valid_loader)
@@ -114,8 +124,10 @@ class ImageClassifier():
                     torch.save(net.state_dict(), os.path.join(self.log_dir, 'net.pkl'))
                 self.logger.info(
                     '[%3d]  Valid data = %6d  Valid Acc = %.4f' 
-                    % (epoch + 1, len(self.valid_loader.dataset), valid_acc))
+                    % (epoch + 1, len(self.valid_loader.dataset), valid_acc)
+                )
             
+
 
     def _valid(self, loader):
         total = 0
@@ -141,9 +153,8 @@ class ImageClassifier():
 
     def evaluate(self, net_dir=None):
         self._load_best_net(net_dir)
-        valid_acc = self._valid(self.valid_loader)
         test_acc = self._valid(self.test_loader)
-        self.logger.info('Best Valid Acc = %.4f and Final Test Acc = %.4f' % (valid_acc, test_acc))
+        self.logger.info('Final Test Acc = %.4f' % (test_acc))
         return test_acc
 
 
@@ -155,5 +166,6 @@ class ImageClassifier():
     def _load_best_net(self, net_dir):
         if net_dir is None: net_dir = self.log_dir
         net_file = os.path.join(net_dir, 'net.pkl')
-        assert os.path.exists(net_file), 'Assert Error: the net file does not exist'
+        assert os.path.exists(net_file), \
+            'Assert Error: the net file does not exist'
         self.net.load_state_dict(torch.load(net_file))

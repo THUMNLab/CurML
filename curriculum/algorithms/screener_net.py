@@ -12,20 +12,26 @@ from .utils import VNet_, set_parameter
 
 
 class ScreenerNet(BaseCL):
+    """ScreenerNet CL Algorithm. 
+    
+    Screenernet: Learning self-paced curriculum for deep neural networks. https://arxiv.org/pdf/1801.00904
+    """
     def __init__(self, ):
         super(ScreenerNet, self).__init__()
 
-        self.name = 'screenernet'
+        self.name = 'screener_net'
 
         self.catnum = 10
         self.lr = 1e-3       
         
+
     def data_prepare(self, loader):
         super().data_prepare(loader)
 
         self.trainData = DataLoader(self.dataset, self.batch_size, shuffle=True)
         self.iter = iter(self.trainData)
         self.weights = torch.zeros(self.data_size)
+
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
@@ -39,6 +45,7 @@ class ScreenerNet(BaseCL):
         self.linear = VNet_(self.catnum, 1).to(self.device)
         self.optimizer1 = SGD(self.vnet_.parameters(), lr=self.lr, weight_decay=0.01)
         self.optimizer2 = SGD(self.linear.parameters(), lr=self.lr, weight_decay=0.01)
+
 
     def data_curriculum(self, loader):
         self.model.train()
@@ -85,5 +92,4 @@ class ScreenerNetTrainer(BaseTrainer):
         cl = ScreenerNet()
 
         super(ScreenerNetTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

@@ -7,6 +7,10 @@ from .base import BaseTrainer, BaseCL
 
 
 class DIHCL(BaseCL):
+    """
+    
+    Curriculum learning by dynamic instance hardness. https://proceedings.neurips.cc/paper/2020/file/62000dee5a05a6a71de3a6127a68778a-Paper.pdf
+    """
     def __init__(self, warm_epoch, discount_factor, decay_rate, 
                  bottom_size, type, sample_type, cei):
         super(DIHCL, self).__init__()
@@ -152,5 +156,4 @@ class DIHCLTrainer(BaseTrainer):
                  type, sample_type, cei)
 
         super(DIHCLTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

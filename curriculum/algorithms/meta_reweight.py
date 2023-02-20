@@ -11,9 +11,13 @@ from .utils import set_parameter
 
 
 class MetaReweight(BaseCL):
+    """Meta Reweight CL Algorithm.
+    
+    Learning to reweight examples for robust deep learning. http://proceedings.mlr.press/v80/ren18a/ren18a.pdf
+    """
     def __init__(self, ):
         super(MetaReweight, self).__init__()
-        self.name = 'metareweight'
+        self.name = 'meta_reweight'
     
 
     def randomSplit(self):
@@ -115,5 +119,4 @@ class MetaReweightTrainer(BaseTrainer):
         cl = MetaReweight()
 
         super(MetaReweightTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

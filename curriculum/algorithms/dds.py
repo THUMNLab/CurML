@@ -13,6 +13,10 @@ from .utils import VNet_, set_parameter
 
 
 class DDS(BaseCL):
+    """
+    
+    Optimizing data usage via differentiable rewards. http://proceedings.mlr.press/v119/wang20p/wang20p.pdf
+    """
     def __init__(self, catnum, epsilon, lr):
         super(DDS, self).__init__()
 
@@ -166,5 +170,4 @@ class DDSTrainer(BaseTrainer):
         cl = DDS(catnum, epsilon, lr)
 
         super(DDSTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

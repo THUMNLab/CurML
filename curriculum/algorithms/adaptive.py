@@ -7,6 +7,10 @@ from .base import BaseTrainer, BaseCL
 
 
 class Adaptive(BaseCL):
+    """
+    
+    Adaptive Curriculum Learning. https://openaccess.thecvf.com/content/ICCV2021/papers/Kong_Adaptive_Curriculum_Learning_ICCV_2021_paper.pdf
+    """
     def __init__(self, num_classes, pace_p, pace_q, pace_r, inv,
                  alpha, gamma, gamma_decay, bottom_gamma, pretrained_net):
         super(Adaptive, self).__init__()
@@ -124,6 +128,5 @@ class AdaptiveTrainer(BaseTrainer):
                  alpha, gamma, gamma_decay, bottom_gamma, pretrained_net)
 
         super(AdaptiveTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)
 

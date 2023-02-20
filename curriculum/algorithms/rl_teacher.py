@@ -1,10 +1,10 @@
-from random import shuffle
-from .base import BaseTrainer, BaseCL
 from collections import deque
 import numpy as np
+from torch.utils.data import DataLoader, Subset
 
-import torch
-from torch.utils.data import DataLoader
+from .base import BaseTrainer, BaseCL
+
+
 
 def estimate_slope(x, y):
     assert len(x) == len(y)
@@ -12,9 +12,12 @@ def estimate_slope(x, y):
     c, _ = np.linalg.lstsq(A, y, rcond=None)[0]
     return c
 
+
+
 class EpsilonGreedyPolicy:
     def __init__(self, epsilon=0.1):
         self.epsilon = epsilon
+
 
     def __call__(self, Q):
         # find the best action with random tie-breaking
@@ -33,14 +36,22 @@ class EpsilonGreedyPolicy:
         assert np.isclose(np.sum(p), 1)
         return p
 
+
+
 class ThompsonPolicy(EpsilonGreedyPolicy):
     pass
 
-class RLTeacher_1(BaseCL):
-    def __init__(self, ):
-        super(RLTeacher_1, self).__init__()
 
-        self.name = 'rlteacher_online'
+
+class RLTeacherOnline(BaseCL):
+    """Reinforcement Learning Teacher CL Algorithm. 
+
+    Teacher-student curriculum learning. https://arxiv.org/pdf/1707.00183
+    """
+    def __init__(self, ):
+        super(RLTeacherOnline, self).__init__()
+
+        self.name = 'rl_teacher_online'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         self.catnum = 10
@@ -51,11 +62,16 @@ class RLTeacher_1(BaseCL):
         self.accs = [0 for i in range(self.catnum)]
         self.reward = []
 
+
     def data_split(self):
-        self.indexs = [range(i*self.data_size//self.catnum, (i+1)*self.data_size//self.catnum) for i in range(self.catnum)]
-        l = [len(self.indexs[i])// self.catnum for i in range(self.catnum)]
-        self.data = [ DataLoader(torch.utils.data.Subset(self.dataset, self.indexs[i]), self.batch_size, shuffle = True)for i in range(self.catnum)]
-        self.validationData = [ DataLoader(torch.utils.data.Subset(self.dataset, self.indexs[i][:l[i]]), self.batch_size, shuffle = True)for i in range(self.catnum)]
+        self.indexs = [range(i * self.data_size // self.catnum, (i + 1) * self.data_size // self.catnum) 
+                       for i in range(self.catnum)]
+        l = [len(self.indexs[i]) // self.catnum for i in range(self.catnum)]
+        self.data = [DataLoader(Subset(self.dataset, self.indexs[i]), self.batch_size, shuffle=True)
+                     for i in range(self.catnum)]
+        self.validationData = [DataLoader(Subset(self.dataset, self.indexs[i][:l[i]]), self.batch_size, shuffle=True)
+                               for i in range(self.catnum)]
+
 
     def data_prepare(self, loader):
         self.dataset = loader.dataset
@@ -64,10 +80,12 @@ class RLTeacher_1(BaseCL):
         self.n_batches = (self.data_size - 1) // self.batch_size + 1
         self.data_split()
 
+
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
         self.criterion = criterion 
         self.model = net
+
 
     def data_curriculum(self, loader):
         acc = 0
@@ -92,15 +110,16 @@ class RLTeacher_1(BaseCL):
         # self.total[self.training] = self.total[self.training] * (1.0 - self.alpha) + self.reward * self.alpha
         p = self.policy(np.abs(self.total)if self.abs else self.total)
         temp = np.random.choice(range(self.catnum), p=p)
-        # print(temp)
         data_loader = DataLoader(self.CLDataset(self.data[temp].dataset), self.batch_size, shuffle=True) 
         return data_loader
 
-class RLTeacher_2(BaseCL):
-    def __init__(self, ):
-        super(RLTeacher_2, self).__init__()
 
-        self.name = 'rlteacher_naive'
+
+class RLTeacherNaive(BaseCL):
+    def __init__(self, ):
+        super(RLTeacherNaive, self).__init__()
+
+        self.name = 'rl_teacher_naive'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         self.catnum = 10
@@ -114,11 +133,13 @@ class RLTeacher_2(BaseCL):
         self.accs = [0 for i in range(self.catnum)]
         self.reward = []
 
+
     def data_split(self):
         self.indexs = [range(i*self.data_size//self.catnum, (i+1)*self.data_size//self.catnum) for i in range(self.catnum)]
         l = [len(self.indexs[i])// self.catnum for i in range(self.catnum)]
-        self.data = [ DataLoader(torch.utils.data.Subset(self.dataset, self.indexs[i]), self.batch_size, shuffle = True)for i in range(self.catnum)]
-        self.validationData = [ DataLoader(torch.utils.data.Subset(self.dataset, self.indexs[i][:l[i]]), self.batch_size, shuffle = True)for i in range(self.catnum)]
+        self.data = [DataLoader(Subset(self.dataset, self.indexs[i]), self.batch_size, shuffle=True)for i in range(self.catnum)]
+        self.validationData = [DataLoader(Subset(self.dataset, self.indexs[i][:l[i]]), self.batch_size, shuffle=True)for i in range(self.catnum)]
+
 
     def data_prepare(self, loader):
         self.dataset = loader.dataset
@@ -127,10 +148,12 @@ class RLTeacher_2(BaseCL):
         self.n_batches = (self.data_size - 1) // self.batch_size + 1
         self.data_split()
 
+
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
         self.criterion = criterion 
         self.model = net
+
 
     def data_curriculum(self, loader):
         acc = 0
@@ -164,18 +187,17 @@ class RLTeacher_2(BaseCL):
         return self.data_loader
 
 
-class RLTeacher_3(BaseCL):
+class RLTeacherWindow(BaseCL):
     def __init__(self, ):
-        super(RLTeacher_3, self).__init__()
+        super(RLTeacherWindow, self).__init__()
 
-        self.name = 'rlteacher_window'
+        self.name = 'rl_teacher_window'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         # self.partnum = 10
         self.alpha = 0.1
         self.abs = False
 
-        
         self.acc = 0
         self.training = 0
         self.reward = 0
@@ -187,12 +209,13 @@ class RLTeacher_3(BaseCL):
     def split(self, data_loader, partnum):
         temp = data_loader.dataset
         k = len(temp)
-        l = k//partnum
+        l = k // partnum
         self.data = []
         for i in range(partnum-1):
-            self.data.append(torch.utils.data.Subset(temp, range(i*l, (i+1)*l)))
+            self.data.append(Subset(temp, range(i * l, (i + 1) * l)))
         self.partnum = partnum - 1
-        self.validationData = DataLoader(torch.utils.data.Subset(temp, range(self.partnum*l, k)), self.batch_size, shuffle=True)
+        self.validationData = DataLoader(Subset(temp, range(self.partnum * l, k)), self.batch_size, shuffle=True)
+
 
     def data_prepare(self, loader):
         self.dataset = loader.dataset
@@ -204,10 +227,12 @@ class RLTeacher_3(BaseCL):
         self.scores = [deque(maxlen=self.window_size) for _ in range(self.partnum)]
         self.timesteps = [deque(maxlen=self.window_size) for _ in range(self.partnum)]
 
+
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
         self.criterion = criterion 
         self.model = net
+
 
     def data_curriculum(self, loader):
         acc = 0
@@ -231,11 +256,13 @@ class RLTeacher_3(BaseCL):
         self.epoch_index += 1
         return self.data_loader
 
-class RLTeacher_4(BaseCL):
-    def __init__(self, ):
-        super(RLTeacher_4, self).__init__()
 
-        self.name = 'rlteacher_sampling'
+
+class RLTeacherSampling(BaseCL):
+    def __init__(self, ):
+        super(RLTeacherSampling, self).__init__()
+
+        self.name = 'rl_teacher_sampling'
         self.policy = EpsilonGreedyPolicy(0.01)
 
         self.partnum = 10
@@ -252,6 +279,7 @@ class RLTeacher_4(BaseCL):
         self.dscores = deque(maxlen=window_size)
         self.prevr = np.zeros(self.partnum)
 
+
     def data_prepare(self, loader):
         self.dataset = loader.dataset
         self.data_size = len(self.dataset)
@@ -260,18 +288,19 @@ class RLTeacher_4(BaseCL):
         partnum = 10
         temp = self.dataset
         k = len(temp)
-        l = k//partnum
+        l = k // partnum
         self.data = []
         self.partnum = partnum
         for i in range(partnum-1):
-            self.data.append(DataLoader(torch.utils.data.Subset(temp, range(i*l, (i+1)*l)),self.batch_size,shuffle=True))
-        self.data.append(DataLoader(torch.utils.data.Subset(temp, range((self.partnum-1)*l, k)), self.batch_size, shuffle=True))
+            self.data.append(DataLoader(Subset(temp, range(i * l, (i + 1) * l)), self.batch_size, shuffle=True))
+        self.data.append(DataLoader(Subset(temp, range((self.partnum - 1) * l, k)), self.batch_size, shuffle=True))
 
 
     def model_prepare(self, net, device, epochs, criterion, optimizer, lr_scheduler):
         self.device = device
         self.criterion = criterion 
         self.model = net
+
 
     def data_curriculum(self, loader):
         self.accs = []
@@ -306,12 +335,11 @@ class RLTeacherTrainer(BaseTrainer):
     def __init__(self, data_name, net_name, device_name, 
                  num_epochs, random_seed, policy):
         
-        cl_dict = {'online': RLTeacher_1,
-                   'naive': RLTeacher_2,
-                   'window': RLTeacher_3,
-                   'sampling': RLTeacher_4}
+        cl_dict = {'online': RLTeacherOnline,
+                   'naive': RLTeacherNaive,
+                   'window': RLTeacherWindow,
+                   'sampling': RLTeacherSampling}
         cl = cl_dict[policy]()
 
         super(RLTeacherTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

@@ -1,6 +1,6 @@
 # The code is developed based on 
 # https://gist.github.com/kevinzakka/d33bf8d6c7f06a9d8c76d97a7879f5cb#file-data_loader-py
-# However, the mean and std of CIFAR-10 seems not correct, which can be refered to 
+# The mean and std of CIFAR-100 is based on 
 # https://gist.github.com/weiaicunzai/e623931921efefd4c331622c344d8151
 
 
@@ -13,11 +13,11 @@ from .utils import Cutout, LabelNoise
 
 
 
-MEAN = [0.4914, 0.4822, 0.4465]
-STD = [0.2470, 0.2435, 0.2616]
+MEAN = [0.5071, 0.4865, 0.4409]
+STD = [0.2673, 0.2564, 0.2762]
 
 
-def get_cifar10_dataset(data_dir, valid_ratio=0.1, shuffle=True, 
+def get_cifar100_dataset(data_dir, valid_ratio=0.1, shuffle=True, 
                         augment=True, cutout_length=0, noise_ratio=0.0):
     train_dataset, valid_dataset = get_train_valid_dataset(
         data_dir, valid_ratio, shuffle, augment, cutout_length, noise_ratio)
@@ -45,11 +45,11 @@ def get_train_valid_dataset(data_dir, valid_ratio, shuffle,
     train_transform = transforms.Compose(transf + normalize + cutout)
     valid_transform = transforms.Compose(normalize)
 
-    train_dataset = datasets.CIFAR10(
+    train_dataset = datasets.CIFAR100(
         root=data_dir, train=True, 
         download=True, transform=train_transform,
     )
-    valid_dataset = datasets.CIFAR10(
+    valid_dataset = datasets.CIFAR100(
         root=data_dir, train=True,
         download=True, transform=valid_transform,
     )
@@ -64,7 +64,7 @@ def get_train_valid_dataset(data_dir, valid_ratio, shuffle,
     valid_dataset = Subset(valid_dataset, valid_idx)
 
     if noise_ratio > 0.0:
-        train_dataset = LabelNoise(train_dataset, noise_ratio, 10)
+        train_dataset = LabelNoise(train_dataset, noise_ratio, 100)
 
     return train_dataset, valid_dataset
 
@@ -72,12 +72,12 @@ def get_train_valid_dataset(data_dir, valid_ratio, shuffle,
 def get_test_dataset(data_dir):
     test_normalize = [
         transforms.ToTensor(),
-        transforms.Normalize(MEAN, STD),
+        transforms.Normalize(MEAN, STD)
     ]
 
     test_transform = transforms.Compose(test_normalize)
 
-    test_dataset = datasets.CIFAR10(
+    test_dataset = datasets.CIFAR100(
         root=data_dir, train=False,
         download=True, transform=test_transform,
     )

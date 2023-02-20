@@ -13,10 +13,14 @@ from .utils import VNet, set_parameter
 
 
 class MetaWeightNet(BaseCL):
+    """Meta-Weight-Net CL Algorithm.
+    
+    Meta-weight-net: Learning an explicit mapping for sample weighting. https://proceedings.neurips.cc/paper/2019/file/e58cc5ca94270acaceed13bc82dfedf7-Paper.pdf
+    """
     def __init__(self, ):
         super(MetaWeightNet, self).__init__()
 
-        self.name = 'metaweightnet'
+        self.name = 'meta_weight_net'
 
 
     def randomSplit(self):
@@ -124,5 +128,4 @@ class MetaWeightNetTrainer(BaseTrainer):
         cl = MetaWeightNet()
 
         super(MetaWeightNetTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

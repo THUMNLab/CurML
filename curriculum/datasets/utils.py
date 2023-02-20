@@ -14,8 +14,7 @@ class LabelNoise(Dataset):
         for i, (_, y) in enumerate(self.dataset):
             if random.random() < self.noise_ratio:
                 self.labels.append(
-                    random.choice(list(range(y)) + list(range(y + 1, 10)))
-                )
+                    random.choice(list(range(0, y)) + list(range(y + 1, num_labels))))
             else:
                 self.labels.append(y)
 

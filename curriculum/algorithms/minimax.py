@@ -1,14 +1,19 @@
 import math
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Subset, DataLoader
-import numpy as np
+
 from .base import BaseTrainer, BaseCL
 
 
 
 class Minimax(BaseCL):
+    """Minimax CL Algorithm.
+    
+    Minimax curriculum learning: Machine teaching with desirable difficulties and scheduled diversity. https://openreview.net/pdf?id=BywyFQlAW
+    """
     def __init__(self, schedule_epoch, warm_epoch, lam, minlam, gamma, delta,
                  initial_size, fe_alpha, fe_beta, fe_gamma, fe_lambda,
                  fe_entropy, fe_gsrow, fe_central_op, fe_central_min, 
@@ -272,5 +277,4 @@ class MinimaxTrainer(BaseTrainer):
                  num_classes)
 
         super(MinimaxTrainer, self).__init__(
-            data_name, net_name, device_name, num_epochs, random_seed, cl
-        )
+            data_name, net_name, device_name, num_epochs, random_seed, cl)

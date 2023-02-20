@@ -1,7 +1,7 @@
 from .utils import Cutout
 
 from .cifar10 import get_cifar10_dataset
-# TODO: other image datasets like cifar100, imagenet, etc.
+from .cifar100 import get_cifar100_dataset
 # TODO: other text  datasets like ptb, wikitext, etc.
 
 
@@ -10,11 +10,13 @@ all = [
     'Cutout',
 
     'get_cifar10_dataset',
+    'get_cifar100_dataset',
 ]
 
 
 data_dict = {
-    'cifar10': get_cifar10_dataset
+    'cifar10': get_cifar10_dataset,
+    'cifar100': get_cifar100_dataset,
 }
 
 

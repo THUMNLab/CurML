@@ -12,7 +12,7 @@ from .cbs import CBS, CBSTrainer
 from .minimax import Minimax, MinimaxTrainer
 from .adaptive import Adaptive, AdaptiveTrainer
 from .coarse_to_fine import CoarseToFine, CoarseToFineTrainer
-from .rl_teacher import RLTeacher_1, RLTeacher_2, RLTeacher_3, RLTeacher_4, RLTeacherTrainer
+from .rl_teacher import RLTeacherOnline, RLTeacherNaive, RLTeacherWindow, RLTeacherSampling, RLTeacherTrainer
 from .screener_net import ScreenerNet, ScreenerNetTrainer
 from .meta_reweight import MetaReweight, MetaReweightTrainer
 from .meta_weight_net import MetaWeightNet, MetaWeightNetTrainer
@@ -61,10 +61,10 @@ all = [
     'CoarseToFine',
     'CoarseToFineTrainer',
 
-    'RLTeacher_1',
-    'RLTeacher_2',
-    'RLTeacher_3',
-    'RLTeacher_4',
+    'RLTeacherOnline',
+    'RLTeacherNaive',
+    'RLTeacherWindow',
+    'RLTeacherSampling',
     'RLTeacherTrainer',
 
     'ScreenerNet',
