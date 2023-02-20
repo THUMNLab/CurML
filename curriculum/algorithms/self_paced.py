@@ -53,16 +53,9 @@ class SelfPaced(BaseCL):
         data_indices = torch.argsort(data_loss)[:data_size]     # Sort data according to the loss value and sample the easist data.
         data_threshold = data_loss[data_indices[-1]]            # Derive the loss of the hardest data instance among the sampled data.
 
-<<<<<<< HEAD
-        if self.weight_fn == 'hard':
-            dataset = Subset(self.dataset, data_indices)
-        else:
-            self.weights = self._data_weight(data_loss, data_threshold)
-=======
         if self.weight_fn == 'hard':                            # Data Sampling (hard selection).
             dataset = Subset(self.dataset, data_indices)
         else:                                                   # Data Reweighting (soft selection).
->>>>>>> aaba15c1908d655c82f67812e4a624ee0b70593d
             dataset = self.dataset
             self.weights = self._data_weight(data_loss, data_threshold)
         return DataLoader(dataset, self.batch_size, shuffle=True)
