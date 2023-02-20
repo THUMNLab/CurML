@@ -140,10 +140,10 @@ class SparseSGD(torch.optim.SGD):
 
         self.skip_update_zero_grad = skip_update_zero_grad
         str_disp = ' ' if self.skip_update_zero_grad else ' "not" '
-        print('Warning: skip_update_zero_grad set to {}. '
-              'We will{}zero out update to state and momentum buffer '
-              'for parameters with zero gradient. '.format(self.skip_update_zero_grad,
-                                                           str_disp))
+        # print('Warning: skip_update_zero_grad set to {}. '
+        #       'We will{}zero out update to state and momentum buffer '
+        #       'for parameters with zero gradient. '.format(self.skip_update_zero_grad,
+        #                                                    str_disp))
         assert weight_decay == 0, 'Weight decay for optimizer should be set to 0. ' \
                                   'For data parameters, we explicitly invoke weight decay on ' \
                                   'subset of data parameters in the computation graph.'
@@ -173,7 +173,7 @@ class SparseSGD(torch.optim.SGD):
                 p_before_update = p.data.clone()
 
                 if weight_decay != 0:
-                    d_p.add_(weight_decay, p.data)
+                    d_p.add_(p.data, alpha=weight_decay)
                 if momentum != 0:
                     param_state = self.state[p]
                     if 'momentum_buffer' not in param_state:
@@ -184,13 +184,13 @@ class SparseSGD(torch.optim.SGD):
                     else:
                         buf = param_state['momentum_buffer']
                         buf_before_update = buf.data.clone()
-                        buf.mul_(momentum).add_(1 - dampening, d_p)
+                        buf.mul_(momentum).add_(d_p, alpha=1 - dampening)
                     if nesterov:
                         d_p = d_p.add(momentum, buf)
                     else:
                         d_p = buf
 
-                p.data.add_(-group['lr'], d_p)
+                p.data.add_(d_p, alpha=-group['lr'])
 
                 # We need to revert back the state of parameter and momentum buffer for entries with zero-grad
                 if self.skip_update_zero_grad:
