@@ -28,6 +28,7 @@ class SelfPaced(BaseCL):
 
         self.name = 'self_paced'
         self.epoch = 0
+        self.net = None
 
         self.start_rate = start_rate
         self.grow_epochs = grow_epochs
