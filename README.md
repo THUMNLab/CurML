@@ -2,9 +2,9 @@
 
 A library & toolkit for Curriculum Learning.
 
-The code of the ACM MM 2022 Open Source Software [paper](https://github.com/THUMNLab/CurML/raw/master/docs/CurML.pdf).
+The code of the ACM MM 2022 Open Source Software paper **CurML: A Curriculum Machine Learning Library**.
 
-Actively under development by @THUMNLab
+The paper can be downloaded from the [official website](https://github.com/THUMNLab/CurML/raw/master/docs/CurML.pdf) or in the [docs directory](https://github.com/THUMNLab/CurML/tree/master/docs).
 
 ## Target
 
