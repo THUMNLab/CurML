@@ -52,7 +52,7 @@ For extension, more latest CL algorithms will be added, or you can add your own 
 
 
 ## Demo
-[▶️ 观看 demo](docs/demo-cl.mov)
+[▶️ 观看 demo](docs/demo-cl.gif)
 
 ## Cite
 
