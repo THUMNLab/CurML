@@ -8,7 +8,7 @@ The paper can be downloaded from the [official website](https://github.com/THUMN
 
 
 ## Demo
-![demo](doc/demo.gif)
+![demo](docs/demo-cl.gif)
 
 
 ## Target
