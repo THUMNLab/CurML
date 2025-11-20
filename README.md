@@ -6,6 +6,9 @@ The code of the ACM MM 2022 Open Source Software paper **CurML: A Curriculum Mac
 
 The paper can be downloaded from the [official website](https://github.com/THUMNLab/CurML/raw/master/docs/CurML.pdf) or in the [docs directory](https://github.com/THUMNLab/CurML/tree/master/docs).
 
+This repository contains the first version of our curriculum learning framework.
+The latest and reorganized version is provided in [CurBench](https://github.com/THUMNLab/CurBench).
+
 
 ## Demo
 ![demo](docs/demo-cl.gif)
