@@ -6,6 +6,11 @@ The code of the ACM MM 2022 Open Source Software paper **CurML: A Curriculum Mac
 
 The paper can be downloaded from the [official website](https://github.com/THUMNLab/CurML/raw/master/docs/CurML.pdf) or in the [docs directory](https://github.com/THUMNLab/CurML/tree/master/docs).
 
+
+## Demo
+![demo](doc/demo.gif)
+
+
 ## Target
 
 1. To reproduce, evaluate and compare existing Curriculum Learning algorithms
@@ -50,9 +55,6 @@ Every CL method implemented has been aranged in `/curriculum/algorithms`, each c
 
 For extension, more latest CL algorithms will be added, or you can add your own CL method in `/curriculum/algorithms`, which should be consistent with the overall framework. For convenience, `/curriculum/backbones` incorporates some standard implementations of popular neural networks, including `resnet`, `vgg`, etc. For other customized datasets, you can add your dataset processing scripts in `/curriculum/datasets`, following the example in `cifar10.py`(only support `cifar10` at present). Trainers for tasks other than image classification in the field of CV, NLP, etc., will be implemented in the future.
 
-
-## Demo
-[▶️ 观看 demo](docs/demo-cl.gif)
 
 ## Cite
 
